@@ -1,0 +1,4 @@
+interface:
+  display_name: "AbleSci Literature Assist"
+  short_description: "科研通英文文献求助、下载与PDF校验流程助手"
+  default_prompt: "Use $ablesci-literature-assist to submit missing English DOI literature requests on AbleSci and download accepted PDFs safely."

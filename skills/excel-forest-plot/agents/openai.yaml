@@ -1,0 +1,4 @@
+interface:
+  display_name: "Excel Forest Plot"
+  short_description: "Build Excel-ready HR forest plot workbooks"
+  default_prompt: "Use $excel-forest-plot to create an Excel workbook and chart steps for HR and 95% CI data."

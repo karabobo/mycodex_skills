@@ -1,0 +1,4 @@
+# One personal skill folder name per line.
+# Lines beginning with # are ignored.
+excel-forest-plot
+ablesci-literature-assist

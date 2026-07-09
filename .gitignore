@@ -1,0 +1,25 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*.log
+*.tmp
+*.bak
+
+# Local/editor state
+.idea/
+.vscode/
+
+# Secrets and local credentials
+.env
+.env.*
+*.pem
+*.key
+*token*
+*secret*
+credentials.*
+auth.json
+
+# Generated examples and ad hoc exports
+outputs/
+dist/
+build/
