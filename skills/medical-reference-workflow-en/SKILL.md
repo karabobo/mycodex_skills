@@ -1,6 +1,6 @@
 ---
 name: medical-reference-workflow-en
-description: "Coordinate a medical slide literature workflow: PPTX citation extraction, prioritized local EndNote lookup, online source retrieval, optional English AbleSci requests, and claim-level PDF verification/highlighting."
+description: "Coordinate a medical slide literature workflow: PPTX citation extraction, DOI and metadata verification, prioritized local EndNote lookup, online PDF retrieval, optional English AbleSci requests, and claim-level highlighting."
 ---
 
 # Medical reference workflow
@@ -10,6 +10,7 @@ Use this when the user asks for the whole chain. Invoke the component skills onl
 | Stage | Skill | Handoff condition |
 | --- | --- | --- |
 | Slide citation inventory | `pptx-citation-inventory-en` | Every rendered slide checked; raw citations and repeat occurrences retained |
+| DOI and metadata resolution | `bibliographic-metadata-resolver-en` | Every work has a verified identity or a documented unresolved reason |
 | Local EndNote lookup | `endnote-pdf-retrieval-en` | Named library searched read-only; copied files hash-verified |
 | Online source acquisition | `literature-source-archive-en` | Unresolved works checked across lawful sources; each attempt and verified PDF attributed |
 | English mutual aid, when requested | `ablesci-literature-assist` | One DOI at a time; metadata and downloaded file verified before acceptance |

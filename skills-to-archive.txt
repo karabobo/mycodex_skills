@@ -5,6 +5,8 @@ ablesci-literature-assist
 ablesci-literature-assist-zh
 pptx-citation-inventory-en
 pptx-citation-inventory-zh
+bibliographic-metadata-resolver-en
+bibliographic-metadata-resolver-zh
 endnote-pdf-retrieval-en
 endnote-pdf-retrieval-zh
 literature-source-archive-en

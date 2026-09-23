@@ -1,6 +1,6 @@
 ---
 name: medical-reference-workflow-zh
-description: 统筹医学 PPT 参考文献全流程：逐页提取引文、优先查本地 EndNote、联网查找 PDF、按需科研通求助，以及原文论断核对与高亮。
+description: 统筹医学 PPT 参考文献全流程：逐页提取引文、核实 DOI 和题录、优先查本地 EndNote、联网查找 PDF、按需科研通求助，以及原文核对与高亮。
 ---
 
 # 医学参考文献组合流程
@@ -10,6 +10,7 @@ description: 统筹医学 PPT 参考文献全流程：逐页提取引文、优�
 | 阶段 | Skill | 交接标准 |
 | --- | --- | --- |
 | PPT 引文提取 | `pptx-citation-inventory-zh` | 全部渲染页已核对，原始写法及重复出现页码保留 |
+| DOI 与题录核实 | `bibliographic-metadata-resolver-zh` | 每篇作品有已核实身份或明确的未解决原因 |
 | 本地 EndNote 检索 | `endnote-pdf-retrieval-zh` | 指定库只读检索，复制件哈希核对 |
 | 联网来源查找 | `literature-source-archive-zh` | 未解决文献逐来源核查，PDF 归档注明来源与版本 |
 | 英文科研通求助，按需 | `ablesci-literature-assist-zh` | 每次一篇 DOI，核对题录及文件后再决定是否采纳 |

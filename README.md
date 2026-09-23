@@ -22,6 +22,7 @@ skills/
   ablesci-literature-assist/
   ablesci-literature-assist-zh/
   pptx-citation-inventory-{en,zh}/
+  bibliographic-metadata-resolver-{en,zh}/
   endnote-pdf-retrieval-{en,zh}/
   literature-source-archive-{en,zh}/
   pdf-claim-highlighter-{en,zh}/
@@ -32,7 +33,8 @@ skills-to-archive.txt
 ```
 
 The medical-reference workflow has separate English and Chinese entry points.
-It checks the named local EndNote library before online sources. AbleSci is an
+It resolves DOI and bibliographic metadata after citation extraction, then
+checks the named local EndNote library before online sources. AbleSci is an
 optional, separately authorized stage for English-language literature only.
 
 ## Sync From Local Codex Skills
