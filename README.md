@@ -36,6 +36,9 @@ The medical-reference workflow has separate English and Chinese entry points.
 It resolves DOI and bibliographic metadata after citation extraction, then
 checks the named local EndNote library before online sources. AbleSci is an
 optional, separately authorized stage for English-language literature only.
+For multi-stage runs, each workflow entry point includes a handoff contract that
+keeps publications, slide citations, and individual claims distinct without
+requiring the user's existing spreadsheet to be rebuilt.
 
 ## Sync From Local Codex Skills
 
@@ -49,14 +52,8 @@ Then run:
 
 The script copies listed skills from `${CODEX_HOME:-$HOME/.codex}/skills` into `skills/`.
 
-## GitHub Setup
+## Privacy
 
-Create a private GitHub repository, then connect this local archive:
-
-```bash
-git remote add origin git@github.com:<github-user>/<repo-name>.git
-git branch -M main
-git push -u origin main
-```
-
-Use a private repository when skills contain work-specific procedures, client names, internal templates, or unpublished workflows.
+This repository is public. Keep client names, local paths, credentials, and
+unpublished work products out of it. Use a separate private repository for
+skills that contain work-specific procedures or internal templates.

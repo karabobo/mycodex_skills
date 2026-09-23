@@ -1,11 +1,13 @@
 ---
 name: medical-reference-workflow-en
-description: "Coordinate a medical slide literature workflow: PPTX citation extraction, DOI and metadata verification, prioritized local EndNote lookup, online PDF retrieval, optional English AbleSci requests, and claim-level highlighting."
+description: "Coordinate an English-language medical slide literature request across PPTX citations, DOI metadata, local EndNote, online PDFs, optional AbleSci, and claim-level highlighting."
 ---
 
 # Medical reference workflow
 
 Use this when the user asks for the whole chain. Invoke the component skills only for requested stages; a request to collect PDFs does not itself authorize claim-level review, posting a mutual-aid request, or accepting a submitted file.
+
+When two or more stages exchange a manifest, read [references/handoff-contract.md](references/handoff-contract.md) before editing it. The contract distinguishes a work from each slide occurrence and each claim; it does not require replacing the user's existing spreadsheet.
 
 | Stage | Skill | Handoff condition |
 | --- | --- | --- |
@@ -16,6 +18,6 @@ Use this when the user asks for the whole chain. Invoke the component skills onl
 | English mutual aid, when requested | `ablesci-literature-assist` | One DOI at a time; metadata and downloaded file verified before acceptance |
 | Claim audit and highlights, when requested | `pdf-claim-highlighter-en` | Every in-scope claim has a verdict and source location; highlighted copies reopened |
 
-Use one stable citation/work ID across stages and keep slide occurrences separate. Search the specified local EndNote library before online sources unless the user chooses otherwise. Add stage-specific fields to the same manifest; preserve original wording, corrections, source attempts, file provenance, version, and unresolved states. Do not turn a missing PDF into a verified citation or a verified citation into a supported slide claim.
+Search the specified local EndNote library before online sources unless the user chooses otherwise. Add stage-specific fields to the manifest; preserve original wording, corrections, source attempts, file provenance, version, and unresolved states. Do not turn a missing PDF into a verified citation or a verified citation into a supported slide claim.
 
 Keep Chinese-language publications, conference items, and website citations visible as user-handled items by default. Escalate title/DOI conflicts, edition mismatches, or inaccessible full text as explicit pending decisions. Report per-stage counts and links to deliverables, including missing items and limitations; the full workflow is complete only for stages actually requested and verified.
