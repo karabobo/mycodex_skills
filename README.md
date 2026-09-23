@@ -19,10 +19,21 @@ Do not archive:
 ```text
 skills/
   excel-forest-plot/
+  ablesci-literature-assist/
+  ablesci-literature-assist-zh/
+  pptx-citation-inventory-{en,zh}/
+  endnote-pdf-retrieval-{en,zh}/
+  literature-source-archive-{en,zh}/
+  pdf-claim-highlighter-{en,zh}/
+  medical-reference-workflow-{en,zh}/
 scripts/
   sync_from_codex_skills.sh
 skills-to-archive.txt
 ```
+
+The medical-reference workflow has separate English and Chinese entry points.
+It checks the named local EndNote library before online sources. AbleSci is an
+optional, separately authorized stage for English-language literature only.
 
 ## Sync From Local Codex Skills
 

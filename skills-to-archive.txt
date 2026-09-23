@@ -2,3 +2,14 @@
 # Lines beginning with # are ignored.
 excel-forest-plot
 ablesci-literature-assist
+ablesci-literature-assist-zh
+pptx-citation-inventory-en
+pptx-citation-inventory-zh
+endnote-pdf-retrieval-en
+endnote-pdf-retrieval-zh
+literature-source-archive-en
+literature-source-archive-zh
+pdf-claim-highlighter-en
+pdf-claim-highlighter-zh
+medical-reference-workflow-en
+medical-reference-workflow-zh
