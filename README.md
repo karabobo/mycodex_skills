@@ -26,6 +26,7 @@ skills/
   endnote-pdf-retrieval-{en,zh}/
   literature-source-archive-{en,zh}/
   pdf-claim-highlighter-{en,zh}/
+  selective-literature-highlight-{en,zh}/
   medical-reference-workflow-{en,zh}/
 scripts/
   sync_from_codex_skills.sh

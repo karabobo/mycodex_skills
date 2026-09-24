@@ -13,5 +13,7 @@ literature-source-archive-en
 literature-source-archive-zh
 pdf-claim-highlighter-en
 pdf-claim-highlighter-zh
+selective-literature-highlight-en
+selective-literature-highlight-zh
 medical-reference-workflow-en
 medical-reference-workflow-zh

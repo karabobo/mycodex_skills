@@ -16,7 +16,8 @@ description: 用中文统筹医学 PPT 参考文献全流程：引文提取、DO
 | 本地 EndNote 检索 | `endnote-pdf-retrieval-zh` | 指定库只读检索，复制件哈希核对 |
 | 联网来源查找 | `literature-source-archive-zh` | 未解决文献逐来源核查，PDF 归档注明来源与版本 |
 | 英文科研通求助，按需 | `ablesci-literature-assist-zh` | 每次一篇 DOI，核对题录及文件后再决定是否采纳 |
-| 论断核验与高亮，按需 | `pdf-claim-highlighter-zh` | 范围内每项论断有判断及证据位置，高亮件已重新检查 |
+| 全套页面论断审计，按需 | `pdf-claim-highlighter-zh` | 范围内每项论断有判断及证据位置 |
+| 逐篇精选文献高亮，按需 | `selective-literature-highlight-zh` | 仅标注获支持的短片段，副本已重新打开并渲染检查 |
 
 除非用户指定其他顺序，先查指定 EndNote 库，再查联网来源。持续扩展清单的阶段字段，保留原文、纠正信息、检索尝试、PDF 来源和版本、未解决状态。“缺 PDF”“有 PDF”“论断有证据”是三种不同状态，不得混同。
 
