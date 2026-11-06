@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "targets": {
+    "dsh": {
+      "name": "DeepSeek Harness",
+      "adapter": "dsh",
+      "output": ".dsh/skills",
+      "install_root": "~/.dsh/skills",
+      "kind": "skill-directory"
+    },
+    "codex": {
+      "name": "Codex CLI",
+      "adapter": "codex",
+      "output": ".codex/skills",
+      "install_root": "~/.codex/skills",
+      "kind": "skill-directory"
+    },
+    "cline": {
+      "name": "Cline",
+      "adapter": "cline",
+      "output": ".cline/skills",
+      "kind": "skill-directory"
+    },
+    "cursor": {
+      "name": "Cursor",
+      "adapter": "cursor",
+      "output": ".cursor/rules",
+      "kind": "rule-file"
+    },
+    "gemini": {
+      "name": "Gemini CLI",
+      "adapter": "gemini",
+      "output": ".gemini/extensions/mycodex-skills/skills",
+      "kind": "skill-directory"
+    },
+    "pi": {
+      "name": "pi agent",
+      "adapter": "pi",
+      "output": ".pi/skills",
+      "prompt_output": ".pi/prompts",
+      "kind": "skill-and-prompt"
+    }
+  }
+}

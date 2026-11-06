@@ -24,8 +24,14 @@ outputs/
 dist/
 build/
 
-# Generated DSH rendering and index (rebuild with scripts/sync-skills.sh)
+# Generated agent renderings and index (rebuild with scripts/sync-skills.sh)
 .dsh/
+.codex/
+.cline/
+.cursor/
+.gemini/
+.pi/
+.agents/
 SKILL-INDEX.md
 
 # JavaScript dependency install for the PDF highlight tool

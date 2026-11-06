@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 #
-# sync-skills.sh — render the canonical skills/ tree for DeepSeek Harness.
+# sync-skills.sh — render canonical skills for configured agent targets.
 #
-# The canonical tree in skills/ is the source of truth and stays Codex-flavoured.
-# This script renders a DSH-flavoured copy that DeepSeek Harness can load:
-# valid frontmatter, a description that fits the catalog without losing its
-# scope clause, and no Codex-only artifacts.
+# The canonical tree in skills/ is the source of truth. This wrapper dispatches
+# the Parse -> IR -> Render pipeline; generated target trees are never edited.
 #
 # Usage:
-#   scripts/sync-skills.sh                 # render into .dsh/skills
-#   scripts/sync-skills.sh --install       # also install into ~/.dsh/skills
-#   scripts/sync-skills.sh --check         # validate only
-#   scripts/sync-skills.sh --target codex # render a named agent target
+#   scripts/sync-skills.sh                    # render DSH + validate/index
+#   scripts/sync-skills.sh --target all       # render every configured target
+#   scripts/sync-skills.sh --target cursor    # render one target
+#   scripts/sync-skills.sh --install          # install selected target
+#   scripts/sync-skills.sh --check            # parse canonical skills only
 #   scripts/sync-skills.sh --help
 #
 set -euo pipefail
@@ -44,8 +43,19 @@ main() {
   else
     "$PYTHON" "$REPO_ROOT/scripts/sync_skills.py"
   fi
-  "$PYTHON" "$REPO_ROOT/scripts/validate_dsh_skills.py" "$REPO_ROOT/.dsh/skills"
-  "$PYTHON" "$REPO_ROOT/scripts/generate_skill_index.py"
+  # DSH validation/indexing applies only to the DSH target.
+  local target="dsh"
+  local index=0
+  while [[ $index -lt ${#args[@]} ]]; do
+    if [[ "${args[$index]}" == "--target" && $((index + 1)) -lt ${#args[@]} ]]; then
+      target="${args[$((index + 1))]}"
+    fi
+    index=$((index + 1))
+  done
+  if [[ "$target" == "dsh" || "$target" == "all" ]]; then
+    "$PYTHON" "$REPO_ROOT/scripts/validate_dsh_skills.py" "$REPO_ROOT/.dsh/skills"
+    "$PYTHON" "$REPO_ROOT/scripts/generate_skill_index.py"
+  fi
 }
 
 main "$@"

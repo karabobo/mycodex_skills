@@ -1,10 +1,9 @@
-# Codex Skills Archive
+# Multi-Agent Skills Archive
 
-This repository archives personal Codex skills for version history, backup, and GitHub synchronization.
-
-It also renders those skills for **DeepSeek Harness (DSH)**, which loads
-skills under a stricter contract than Codex. The canonical `skills/` tree stays
-Codex-flavoured; the DSH rendering is generated, never hand-edited.
+This repository stores canonical skills once and renders agent-specific variants
+for Codex, DeepSeek Harness, Cline, Cursor, Gemini CLI, pi, and future agents.
+It follows the bigpowers model: **edit `skills/` only; generated adapter output is
+never hand-edited**.
 
 ## Policy
 
@@ -54,6 +53,24 @@ optional, separately authorized stage for English-language literature only.
 For multi-stage runs, each workflow entry point includes a handoff contract that
 keeps publications, slide citations, and individual claims distinct without
 requiring the user's existing spreadsheet to be rebuilt.
+
+## Multi-Agent Rendering
+
+Target definitions live in `config/targets.json`. The single driver reads that
+file and dispatches each canonical `SkillIR` record to the named adapter.
+Generated output directories are ignored by Git and should not be edited.
+
+```bash
+./scripts/sync-skills.sh --target dsh
+./scripts/sync-skills.sh --target codex
+python3 scripts/sync_skills.py --target all
+python3 scripts/sync_skills.py --target cursor --output /tmp/mycodex-cursor
+```
+
+Initial targets are DSH, Codex, Cline, Cursor, Gemini CLI, and pi. Adding a
+new agent means adding its output contract to `config/targets.json`, writing an
+adapter under `scripts/adapters/`, registering it, and adding renderer tests;
+the canonical skill bodies remain unchanged.
 
 ## Sync From Local Codex Skills
 
