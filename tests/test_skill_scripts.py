@@ -135,6 +135,12 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         self.assertIn("结论标题", kit)
         self.assertIn("只读标题", kit)
         self.assertIn("Action titles", kit)
+        # The five MBB action-title rules and the two hard constraints stay explicit.
+        for rule in ("五条硬规则", "完整句子", "15 词", "主动语态", "带数字", "放不下就拆页", "永不缩字号"):
+            self.assertIn(rule, kit)
+        for rule in ("**Title rules.**", "complete sentence", "15 words", "active voice",
+                     "never shrink the font"):
+            self.assertIn(rule, pptx)
 
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")

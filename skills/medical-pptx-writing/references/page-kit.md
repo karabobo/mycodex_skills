@@ -20,13 +20,19 @@
 
 标题是这一页的结论，不是栏目名。观众只读标题，也应该知道这页要说什么。
 
-### 三条硬指标
+### 五条硬规则（MBB action title）
 
-1. **讲结论，不讲主题**：`[方案] 将中位 OS 延长 6.2 个月`，不是 `疗效数据`。
-2. **一行写完**：中文 ≤20 字，英文 ≤15 词，最多两行；放不下就拆页，永远不缩字号。
-3. **有数字或明确判断**：`ORR 提升至 68%` 才算结论，`疗效显著` 不算。
+1. **完整句子**：标题是一句能独立成立的话——主语 + 动词 + 结果。`[方案] 将中位 OS 延长 6.2 个月` 合格；`疗效数据`、`关于 EGFR 20 外显子插入突变` 不合格。
+2. **不超过 15 词 / 两行**：英文 ≤15 词，中文 ≤20 字，最多两行。
+3. **主动语态**：`[方案] 降低 3 级不良事件发生率`，不是 `3 级不良事件发生率被观察到降低`。
+4. **带数字**：`ORR 提升至 68%` 才算结论；`疗效显著`、`大幅改善`、`值得关注` 都不算。
+5. **只读标题能讲完故事**：把全篇标题单独抄成一段，能读出「问题 → 证据 → 结论 → 落地」才算合格；读不出来，说明标题写的是主题不是结论。
 
-主动语态、单一结论、全篇同一句式节奏。标题里出现「和 / 及 / 以及 / and」，通常说明该拆成两页。
+### 两条硬约束
+
+- **放不下就拆页**：标题和主图抢空间时拆成两页，不缩字号、不压行距、不切标题。
+- **永不缩字号**：字号由版面决定，不由内容多少决定；内容塞不下说明这页该拆。
+- 标题里出现「和 / 及 / 以及 / and」，几乎总是该拆成两页的信号。全篇保持同一句式节奏。
 
 ### 结构：三段式
 
@@ -56,7 +62,7 @@
 
 ### 英文页（Action titles）
 
-Same rules for English decks: state the takeaway as a complete sentence, keep it under 15 words and never past two lines, use active voice, put the number in the title, one claim per title. If the title needs "and", split the slide; never shrink the font to fit.
+Same five rules for English decks. An action title is a complete sentence under 15 words, at most two lines, in active voice, carrying the number, and readable as the whole argument when the titles are read alone. If the title does not fit, split the slide; never shrink the font.
 
 ## 数字三件套
 

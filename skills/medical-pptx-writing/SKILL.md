@@ -48,6 +48,8 @@ These rules override generic PowerPoint advice whenever this skill produces, reb
 
 Pick the page type first, then fill it in. Every page type answers one question and its title is that answer. Full skeletons, title patterns and copy examples are in [references/page-kit.md](references/page-kit.md).
 
+**Title rules.** Every slide title is a complete sentence that states the conclusion, not a section label: subject, verb, result. Keep it to two lines at most — 15 words in English, 20 characters in Chinese — written in active voice, with the number in the title. Read the titles alone, in order: they must reproduce the argument without the slides. When a title does not fit, split the slide; never shrink the font, compress the leading, or cut the sentence.
+
 | Page type | The one job | Skeleton |
 |---|---|---|
 | Cover | State the single claim of the talk | Title of 18 characters or fewer + subtitle + brand corner |
