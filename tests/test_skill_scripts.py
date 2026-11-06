@@ -111,6 +111,18 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         self.assertIn("noGrp", workflow)
         self.assertIn("nlm_short.ens", workflow)
 
+    def test_pptx_boundary_rule_is_testable(self):
+        claims = self.read("skills", "medical-pptx-writing", "references", "evidence-and-claims.md")
+        pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
+        self.assertIn("### Membership test", claims)
+        for marker in ("Applicability", "Conditions", "Limits", "Compliance boilerplate"):
+            self.assertIn(marker, claims)
+        # The three retained elements, and the deletion of disclaimers.
+        for element in ("Population", "Data", "95% CI"):
+            self.assertIn(element, claims)
+        self.assertIn("仅供参考", claims)
+        self.assertIn("membership test", pptx)
+
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
         visual = self.read("skills", "medical-pptx-writing", "references", "visual-and-editable-production.md")
