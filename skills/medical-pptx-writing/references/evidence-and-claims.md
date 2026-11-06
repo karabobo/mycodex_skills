@@ -1,0 +1,73 @@
+# Evidence and Claim Control
+
+## Source priority
+
+1. Current label and regulatory documents
+2. Original pivotal publication and supplement/appendix
+3. Updated follow-up publication or conference abstract
+4. Current authoritative guideline
+5. Consensus statement
+6. Systematic review or meta-analysis
+7. Real-world evidence
+8. Secondary interpretation
+
+Do not treat an appendix as a separate trial. Keep different cutoffs and analysis sets distinct.
+
+## Data extraction fields
+
+For each study extract:
+
+- citation and study name;
+- phase and design;
+- population, line, geography, and eligibility;
+- randomized and analyzed sample sizes;
+- treatment, dose, schedule, and duration;
+- primary, secondary, and exploratory endpoints;
+- result, unit, HR/OR/RR, 95% CI, and P value;
+- analysis set, denominator, cutoff, and follow-up;
+- safety definition and exposure window;
+- exact source page, table, figure, or appendix location;
+- limitations.
+
+Use `尚未确认` instead of inference when a field cannot be verified.
+
+## Claim ledger schema
+
+| Field | Requirement |
+|---|---|
+| Slide/topic | Stable locator |
+| Proposed claim | Exact audience-facing wording |
+| Population/context | Indication, line, subgroup, geography |
+| Endpoint/data | Full statistic and definition |
+| Source | Exact paper, label, guideline, or appendix |
+| Source location | Page/table/figure/section |
+| Evidence status | Direct / qualified / exploratory / mechanistic / unsupported / unchecked |
+| Wording limit | Required qualifier or prohibited interpretation |
+
+## Evidence status language
+
+- **Direct:** source explicitly supports the claim.
+- **Qualified:** core claim is supported only with population, cutoff, or endpoint qualification.
+- **Exploratory:** subgroup, post hoc, biomarker, or hypothesis-generating analysis.
+- **Mechanistic:** biologically plausible rationale without direct clinical causal proof.
+- **Unsupported:** cited source does not support the wording.
+- **Unchecked:** not yet verified against the original source.
+
+## Hard boundaries
+
+- Do not turn association into causality.
+- Do not call an exploratory subgroup a preferred population without appropriate interaction evidence.
+- Do not call retrospective or single-arm RWE proof of RCT efficacy.
+- Do not directly rank therapies using unmatched cross-trial values.
+- Do not mix global and regional data, confirmed and unconfirmed response, or different safety definitions.
+- Do not interpret changing HR point estimates across follow-up cuts as a patient's risk continually decreasing.
+- Do not use mechanistic engineering features as proof of superior clinical efficacy or safety.
+
+## Evidence prompt
+
+> Build an evidence map for the listed medical questions. Prefer labels, original trials, supplements, updated follow-up, and authoritative guidelines. For every result, record population, analysis set, denominator, endpoint definition, cutoff, follow-up, statistic, source location, and limitations. Separate direct evidence, exploratory findings, mechanistic rationale, and inference. Mark missing fields as unverified; do not force a nearby source to support a broader claim.
+
+## Claim verification prompt
+
+> Evaluate whether this proposed slide claim is directly supported by the cited source. Check population, treatment line, analysis set, denominator, endpoint, cutoff, follow-up, statistic, and wording strength. Identify correlation-to-causation, subgroup overreach, cross-trial comparison, or mechanism-to-outcome overreach. Return evidence status, exact supporting location, risk, and a presentation-ready revision.
+

@@ -17,3 +17,4 @@ selective-literature-highlight-en
 selective-literature-highlight-zh
 medical-reference-workflow-en
 medical-reference-workflow-zh
+medical-pptx-writing

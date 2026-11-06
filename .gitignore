@@ -34,5 +34,5 @@ build/
 .agents/
 SKILL-INDEX.md
 
-# JavaScript dependency install for the PDF highlight tool
-skills/selective-literature-highlight-zh/node_modules/
+# JavaScript dependency installs (per-skill, task-local)
+node_modules/

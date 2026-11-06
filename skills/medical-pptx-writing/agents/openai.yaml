@@ -1,0 +1,7 @@
+interface:
+  display_name: "医学PPTX AI撰写"
+  short_description: "证据驱动的医学PPTX策划、撰写、设计和制作技能"
+  default_prompt: "Use $medical-pptx-writing to plan and create an evidence-based, visually polished, editable medical PPTX."
+
+policy:
+  allow_implicit_invocation: true

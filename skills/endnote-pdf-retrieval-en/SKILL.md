@@ -13,4 +13,6 @@ The EndNote library is read-only. Work from a user's named library and citation 
 4. Copy only validated files to the requested destination without overwriting an existing file. Keep the EndNote original untouched. Compute source and destination SHA-256 hashes and require equality; when a destination file already exists, compare its identity and hash before calling it complete.
 5. Update the citation inventory with `endnote_library`, `endnote_record`, `attachment_source`, `archived_file`, `version`, `sha256`, `status`, and any uncertainty. Preserve existing columns and page mappings.
 
-Use statuses that distinguish `copied_verified`, `already_present_verified`, `record_no_pdf`, `no_record`, and `ambiguous_or_mismatched`. Report exact unresolved citations. Never write to or reorganize the `.enl`/`.Data` pair, and do not alter the user's EndNote records merely to make retrieval easier.
+When the library holds no attachment, hand the item to `literature-source-archive-en`, which tries lawful open and institutional routes first and then the user-authorized Sci-Hub fallback; this skill does not download from the web itself.
+
+Use statuses that distinguish `copied_verified`, `already_present_verified`, `record_no_pdf`, `no_record`, `unresolved_after_authorized_sources`, and `ambiguous_or_mismatched`. Report exact unresolved citations. Never write to or reorganize the `.enl`/`.Data` pair, and do not alter the user's EndNote records merely to make retrieval easier.

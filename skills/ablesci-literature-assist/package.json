@@ -1,0 +1,22 @@
+{
+  "name": "ablesci-literature-assist-tools",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Headless, batch-capable AbleSci (科研通) assist automation used by the ablesci-literature-assist skill.",
+  "type": "module",
+  "bin": {
+    "ablesci-batch": "./scripts/ablesci_batch.mjs"
+  },
+  "scripts": {
+    "login": "node scripts/ablesci_batch.mjs --login",
+    "inspect": "node scripts/ablesci_batch.mjs --inspect",
+    "submit": "node scripts/ablesci_batch.mjs --dois",
+    "download": "node scripts/ablesci_batch.mjs --download"
+  },
+  "dependencies": {
+    "playwright": "^1.56.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -56,6 +56,7 @@ CODEX_ONLY_FRONTMATTER_KEYS = (
 
 # Files that carry meaning for Codex but are inert in DSH.
 CODEX_ONLY_FILES = ("agents",)
+IGNORED_DIRS = (".DS_Store", "__pycache__", "node_modules")
 
 
 def _split_description(description: str) -> tuple[str, str]:
@@ -161,6 +162,10 @@ def copy_resources(record: SkillIR, output_root: str) -> list[str]:
         source_path = os.path.join(source_dir, entry)
         target_path = os.path.join(skill_dir, entry)
         if os.path.isdir(source_path):
+            if entry in IGNORED_DIRS:
+                # Dependency installs are task-local: the skill must install
+                # them where it runs, not ship them inside the rendered tree.
+                continue
             if os.path.exists(target_path):
                 shutil.rmtree(target_path)
             shutil.copytree(
