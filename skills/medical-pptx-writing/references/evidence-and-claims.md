@@ -65,12 +65,10 @@ Use `尚未确认` instead of inference when a field cannot be verified.
 
 ## Forbidden slide wording
 
-How far a claim reaches is a review-stage question (claim ledger, speaker notes, `delivery-and-qa.md`). Authoring has one job: never put these words on a slide.
+Never put these on a slide.
 
-| Category | Forbidden | Write instead |
-|---|---|---|
-| Disclaimer / hedge | 仅供参考、仅供内部使用、本材料不构成医疗建议、请咨询专业医师、尚需进一步验证、有待证实、初步结果显示、可能有效；for reference only, not medical advice, further validation is needed, may be effective | Nothing on the slide. State the reported result (population + statistic + 95% CI) or delete the sentence. |
-| Extrapolation | 所有患者、全人群、同类药物均可、class effect、真实世界同样有效、可推广至… | Only the enrolled population and analysis set of the cited study. |
+- Disclaimers and hedges: 仅供参考、仅供内部使用、本材料不构成医疗建议、请咨询专业医师、尚需进一步验证、有待证实、初步结果显示、可能有效；for reference only, not medical advice, further validation is needed, may be effective.
+- Extrapolation: 所有患者、全人群、同类药物均可、class effect、真实世界同样有效、可推广至…
 
 A slide then answers two things only: what the result was (statistic, 95% CI, source page) and who it belongs to (the population actually enrolled).
 

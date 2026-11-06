@@ -119,8 +119,6 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         for banned in ("仅供参考", "仅供内部使用", "本材料不构成医疗建议", "尚需进一步验证",
                        "class effect"):
             self.assertIn(banned, claims)
-        # The ban is a wording rule, not a claim-scope rule: scope stays in review.
-        self.assertIn("review-stage question", claims)
         self.assertIn("answers two things only", claims)
 
     def test_pptx_font_and_size_defaults(self):
