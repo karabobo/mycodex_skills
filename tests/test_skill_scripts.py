@@ -111,6 +111,17 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         self.assertIn("noGrp", workflow)
         self.assertIn("nlm_short.ens", workflow)
 
+    def test_pptx_forbids_hedging_and_disclaimers(self):
+        pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
+        claims = self.read("skills", "medical-pptx-writing", "references", "evidence-and-claims.md")
+        self.assertIn("No hedging, disclaimers, extrapolation, or invented comparisons", pptx)
+        self.assertIn("## Forbidden slide wording", claims)
+        for banned in ("仅供参考", "仅供内部使用", "本材料不构成医疗建议", "尚需进一步验证",
+                       "first-in-class", "the only"):
+            self.assertIn(banned, claims)
+        # The ban is a wording rule, not a claim-scope rule: scope stays in review.
+        self.assertIn("review-stage job", claims)
+
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
         visual = self.read("skills", "medical-pptx-writing", "references", "visual-and-editable-production.md")

@@ -63,6 +63,24 @@ Use `尚未确认` instead of inference when a field cannot be verified.
 - Do not interpret changing HR point estimates across follow-up cuts as a patient's risk continually decreasing.
 - Do not use mechanistic engineering features as proof of superior clinical efficacy or safety.
 
+## Forbidden slide wording
+
+Adjudicating how far a claim reaches is a review-stage job (claim ledger, speaker notes, `delivery-and-qa.md`). Authoring has exactly one obligation here: never put these words on a slide.
+
+| Category | Forbidden | Write instead |
+|---|---|---|
+| Disclaimer / hedge | 仅供参考、仅供内部使用、本材料不构成医疗建议、请咨询专业医师、尚需进一步验证、有待证实、初步结果显示、可能有效；for reference only, not medical advice, further validation is needed, may be effective | Nothing on the slide. State the reported result (population + statistic + 95% CI) or delete the sentence. |
+| Extrapolation | 所有患者、全人群、同类药物均可、class effect、真实世界同样有效、可推广至… | Only the enrolled population and analysis set of the cited study. |
+| Comparison / ranking | 优于、更优、首选、同类最佳、显著优于、first-in-class、the only、the best (with no head-to-head) | Quote a comparison only when the source ran it head-to-head, and quote it as reported. |
+| Mechanism / future | 必将、有望、将改变临床实践、可替代…、should become standard | Delete. Mechanism rationale and future positioning go in speaker notes. |
+
+Rules:
+
+- A slide carries what the source reported: who, which result, 95% CI, and the source page. Not why it matters, not how far it reaches.
+- When the evidence is too thin for the sentence, remove the sentence. Softening it is the same error with more words.
+- On revision, do not re-introduce removed hedges or disclaimers; a repaired claim stays repaired.
+- Sole exception: when the user supplies an exact compliance string and asks for it on a specific slide, place that string verbatim and add nothing around it.
+
 ## Evidence prompt
 
 > Build an evidence map for the listed medical questions. Prefer labels, original trials, supplements, updated follow-up, and authoritative guidelines. For every result, record population, analysis set, denominator, endpoint definition, cutoff, follow-up, statistic, source location, and limitations. Separate direct evidence, exploratory findings, mechanistic rationale, and inference. Mark missing fields as unverified; do not force a nearby source to support a broader claim.

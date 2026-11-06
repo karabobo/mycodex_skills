@@ -42,6 +42,7 @@ These rules override generic PowerPoint advice whenever this skill produces, reb
 - **The bottom-left reference list is one single text box per slide, set at 8 pt by default.** Never split it into several text boxes, one shape per reference, or an image. Set it in standard NLM short style matching `/Applications/EndNote 2025/Styles/nlm_short.ens`: authors, title, journal, year, volume(issue), pages or article number. Drop to 7 pt only when the reference list genuinely will not fit at 8 pt, never below 7 pt.
 - **No DOI, URL, access date, or descriptive filler in that text box** — no `在线查看`, `查看原文`, `Available from:`, "accessed on", or similar. Identifiers belong in the evidence manifest, not the visible footnote.
 - Keep the reference text box editable, and after rendering verify that it is complete, inside the slide, unclipped, and not overlapping other content.
+- **No hedging, disclaimers, extrapolation, or invented comparisons on slides.** Never put `仅供参考`, `仅供内部使用`, `本材料不构成医疗建议`, `请咨询专业医师`, `尚需进一步验证`, `有待证实`, `初步结果显示`, `可能有效`, "for reference only", "not medical advice", or "further validation is needed" on a slide. Do not widen a result past the population that was enrolled, and do not rank or compare regimens that were never compared head-to-head (`优于`, `首选`, `同类最佳`, `first-in-class`, `the only`, "the best"). If the evidence cannot carry a sentence, cut the sentence instead of softening it — scope and certainty belong in the claim ledger and the speaker notes, not in on-slide caveats.
 
 ## Workflow
 
