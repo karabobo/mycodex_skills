@@ -119,7 +119,6 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         for banned in ("不能证明", "不足以说明", "并非", "而不是", "尚不能", "更准确地说",
                        "仅供参考", "仅供内部使用", "尚需进一步验证", "class effect"):
             self.assertIn(banned, claims)
-        self.assertIn("answers two things only", claims)
 
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")

@@ -71,8 +71,6 @@ No defensive hedging or self-correcting wording on a slide.
 - Disclaimers: 仅供参考、仅供内部使用、本材料不构成医疗建议、请咨询专业医师、尚需进一步验证、有待证实、初步结果显示、可能有效；for reference only, not medical advice, further validation is needed.
 - Extrapolation: 所有患者、全人群、同类药物均可、class effect、真实世界同样有效、可推广至…
 
-A slide answers two things only: what the result was (statistic, 95% CI, source page) and who it belongs to (the population actually enrolled).
-
 ## Evidence prompt
 
 > Build an evidence map for the listed medical questions. Prefer labels, original trials, supplements, updated follow-up, and authoritative guidelines. For every result, record population, analysis set, denominator, endpoint definition, cutoff, follow-up, statistic, source location, and limitations. Separate direct evidence, exploratory findings, mechanistic rationale, and inference. Mark missing fields as unverified; do not force a nearby source to support a broader claim.
