@@ -31,6 +31,7 @@ skills/                        # canonical source (Codex-flavoured)
   pdf-claim-highlighter-{en,zh}/
   selective-literature-highlight-{en,zh}/
   medical-reference-workflow-{en,zh}/
+  medical-pptx-writing/
 scripts/
   sync_from_codex_skills.sh    # pull new skills from ~/.codex/skills
   sync-skills.sh               # render + validate + index for DSH
@@ -41,6 +42,8 @@ scripts/
   adapters/dsh.py              # IR -> DSH skill tree
 tests/
   test_dsh_adapter.py
+  test_target_adapters.py
+  test_skill_scripts.py
 .dsh/skills/                   # GENERATED — the DSH rendering (gitignored)
 SKILL-INDEX.md                 # GENERATED — navigation index (gitignored)
 skills-to-archive.txt
@@ -48,8 +51,18 @@ skills-to-archive.txt
 
 The medical-reference workflow has separate English and Chinese entry points.
 It resolves DOI and bibliographic metadata after citation extraction, then
-checks the named local EndNote library before online sources. AbleSci is an
-optional, separately authorized stage for English-language literature only.
+checks the named local EndNote library before online sources. Online retrieval
+runs open access first, then user-authorized institutional access, and finally a
+user-authorized Sci-Hub fallback driven by
+`skills/literature-source-archive-zh/scripts/scihub_fetch.mjs`. AbleSci is an
+optional, separately authorized stage for English-language literature only;
+`skills/ablesci-literature-assist/scripts/ablesci_batch.mjs` drives it headlessly
+after a one-time interactive login, and never posts or accepts without
+`--publish` / `--accept`.
+
+Deck production lives in `medical-pptx-writing`, which carries the house rules
+for editable output: no grouping locks on generated objects, and one bottom-left
+reference text box in NLM short style without DOIs or access wording.
 For multi-stage runs, each workflow entry point includes a handoff contract that
 keeps publications, slide citations, and individual claims distinct without
 requiring the user's existing spreadsheet to be rebuilt.
