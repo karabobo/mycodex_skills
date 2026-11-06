@@ -114,10 +114,10 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
     def test_pptx_forbids_hedging_and_disclaimers(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
         claims = self.read("skills", "medical-pptx-writing", "references", "evidence-and-claims.md")
-        self.assertIn("No hedging, disclaimers, or extrapolation", pptx)
+        self.assertIn("No defensive hedging, no disclaimers, no extrapolation", pptx)
         self.assertIn("## Forbidden slide wording", claims)
-        for banned in ("仅供参考", "仅供内部使用", "本材料不构成医疗建议", "尚需进一步验证",
-                       "class effect"):
+        for banned in ("不能证明", "不足以说明", "并非", "而不是", "尚不能", "更准确地说",
+                       "仅供参考", "仅供内部使用", "尚需进一步验证", "class effect"):
             self.assertIn(banned, claims)
         self.assertIn("answers two things only", claims)
 
