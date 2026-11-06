@@ -6,7 +6,7 @@ one target adapter per agent, following the bigpowers Parse -> IR -> Render
 model. Generated output must not be hand-edited.
 """
 from __future__ import annotations
-import argparse, json, os, shutil, sys
+import argparse, json, os, shutil, subprocess, sys
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, SCRIPT_DIR)
@@ -79,6 +79,33 @@ def install_tree(source: str, target: str) -> int:
     return count
 
 
+def rendered_names(output: str) -> set:
+    try:
+        return {name for name in os.listdir(output) if os.path.isfile(os.path.join(output, name, "SKILL.md"))}
+    except OSError:
+        return set()
+
+
+def install_node_deps(target: str, rendered: set) -> list:
+    """Run ``npm install`` for installed skills that ship a package.json.
+
+    Rendered artifacts deliberately exclude node_modules, so a freshly installed
+    skill whose scripts import a node dependency needs its dependencies restored
+    in its final location. Opt in with --install-deps.
+    """
+    report = []
+    for name in sorted(rendered):
+        skill_dir = os.path.join(target, name)
+        if not os.path.isfile(os.path.join(skill_dir, "package.json")): continue
+        print(f"sync_skills: npm install -> {skill_dir}")
+        code = subprocess.run(
+            ["npm", "install", "--omit=dev", "--no-audit", "--no-fund"],
+            cwd=skill_dir, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT,
+        ).returncode
+        report.append((name, code))
+    return report
+
+
 def target_path(spec: dict, key: str) -> str:
     value = spec.get(key)
     if not value: raise ValueError(f"target is missing {key!r}")
@@ -93,6 +120,7 @@ def main() -> int:
     parser.add_argument("--target", default="dsh", choices=tuple(sorted(targets)) + ("all",))
     parser.add_argument("--install", action="store_true")
     parser.add_argument("--install-root")
+    parser.add_argument("--install-deps", action="store_true", help="run npm install for installed skills that ship a package.json")
     parser.add_argument("--check", action="store_true", help="parse canonical skills only")
     parser.add_argument("--max-description", type=int, default=CATALOG_DESCRIPTION_MAX_LENGTH)
     args = parser.parse_args()
@@ -115,7 +143,14 @@ def main() -> int:
         if args.install:
             install_root = args.install_root if args.install_root and len(selected) == 1 else spec.get("install_root")
             if install_root:
-                print(f"sync_skills: installed {install_tree(output, os.path.expanduser(install_root))} skills -> {os.path.expanduser(install_root)}")
+                root = os.path.expanduser(install_root)
+                count = install_tree(output, root)
+                print(f"sync_skills: installed {count} skills -> {root}")
+                if args.install_deps:
+                    failures = [name for name, code in install_node_deps(root, rendered_names(output)) if code != 0]
+                    if failures:
+                        print(f"sync_skills: npm install failed for {', '.join(failures)}", file=sys.stderr)
+                        return 1
     return 0
 
 if __name__ == "__main__": raise SystemExit(main())

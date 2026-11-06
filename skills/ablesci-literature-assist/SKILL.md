@@ -9,7 +9,7 @@ description: "英文文献的科研通 AbleSci 求助、已有上传文件下载
 
 本文件的 English 一节是登录、逐篇求助、普通下载线路、PDF 核验、积分与采纳边界的唯一操作规范；下面的中文要点只是触发与交接提示，不另造规则。
 
-无头或批量执行时调用 `../ablesci-literature-assist/scripts/ablesci_batch.mjs`：首次需 `--login` 交互登录一次以保存会话，其后可 `--headless`；发布求助必须显式 `--publish`，采纳文件必须显式 `--accept`，其余规则与英文版一致。
+无头或批量执行时调用 `../ablesci-literature-assist/scripts/ablesci_batch.mjs`：首次需 `--login` 交互登录一次：它一定会打开可见窗口并保持到登录成功（默认最多等 300 秒，`--login-wait` 可调），窗口关闭时把会话写进持久化 profile，其后即可 `--headless`；发布求助必须显式 `--publish`，采纳文件必须显式 `--accept`，其余规则与英文版一致。
 
 只处理英文文献，并从待下载清单选取一篇 DOI。核对科研通提取的题名、DOI 和期刊后再按用户授权发布。下载后确认 PDF 身份、页数和完整性，归档并记录来源；错误文件不采纳。验证码由用户完成；优先普通线路，未经逐篇明确授权不使用扣积分高速通道。若用户只要求下载，则保留求助待采纳状态并说明。
 
@@ -73,7 +73,7 @@ npm install               # installs playwright
 npx playwright install chromium
 ```
 
-Bootstrap the session, once per account (opens a visible window; finish login, including CAPTCHA/OTP/slider, inside it):
+Bootstrap the session, once per account. `--login` always opens a visible window and keeps it open, waiting up to 300 s (`--login-wait <seconds>`) until the create page loads without a login redirect; finish sign-in, including CAPTCHA/OTP/slider, inside that window and leave it open until the command prints `"loggedIn": true`. Cookies reach the persistent profile when the window closes, so later runs reuse them:
 
 ```bash
 node scripts/ablesci_batch.mjs --login

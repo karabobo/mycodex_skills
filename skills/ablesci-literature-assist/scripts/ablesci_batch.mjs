@@ -188,6 +188,14 @@ async function pageSummary(page) {
   });
 }
 
+export function resolveHeadless(options) {
+  // `--login` must always open a real window, even though headless is the
+  // default for every other mode: otherwise the interactive wait is skipped and
+  // the script reports "no saved session" without ever showing a login form.
+  if (options.login) return false;
+  return options.headless !== false;
+}
+
 function looksLikeLogin(url, bodyText) {
   return /\/login|signin|sign-in|passport/i.test(url) || /登录|Sign in|Log in/i.test(bodyText);
 }
@@ -201,7 +209,8 @@ async function bodyText(page) {
 }
 
 async function ensureLoggedIn(context, page, options) {
-  const { headless, loginWaitSeconds } = options;
+  const headless = resolveHeadless(options);
+  const { loginWaitSeconds } = options;
   await page.goto(CREATE_URL, { waitUntil: "domcontentloaded", timeout: NAV_TIMEOUT_MS });
   let text = await bodyText(page);
   if (!looksLikeLogin(page.url(), text)) return { loggedIn: true };
@@ -242,20 +251,42 @@ async function ensureLoggedIn(context, page, options) {
   process.stderr.write(
     `\nAbleSci login required. Complete sign-in in the opened window (CAPTCHA/OTP included).\nWaiting up to ${loginWaitSeconds}s for ${CREATE_URL} ...\n`,
   );
-  // Do not navigate while the user is typing: only watch for the URL leaving
-  // the login page, then confirm the create page loads.
+  // Do not navigate while the user is typing: watch for the URL leaving the
+  // login page or, for QR/same-page sign-in, for logged-in chrome in the DOM,
+  // then confirm the create page loads without a login redirect.
   const deadline = Date.now() + loginWaitSeconds * 1000;
+  let windowClosed = false;
+  let loggedInText = "";
   while (Date.now() < deadline) {
-    await page.waitForTimeout(2_000);
-    if (/\/site\/login|\/login/i.test(page.url())) continue;
     try {
+      await page.waitForTimeout(2_000);
+      if (page.isClosed()) {
+        windowClosed = true;
+        break;
+      }
+      const onLoginUrl = /\/site\/login|\/login/i.test(page.url());
+      if (onLoginUrl) {
+        const current = await bodyText(page);
+        const signedIn = /退出登录|退出系统|我的求助|个人中心|我的账号/.test(current) && !/登录密码|登录邮箱/.test(current);
+        if (!signedIn) continue;
+      }
       await page.goto(CREATE_URL, { waitUntil: "domcontentloaded", timeout: 20_000 });
-      if (!looksLikeLogin(page.url(), await bodyText(page))) return { loggedIn: true, via: "interactive" };
-    } catch {
-      // keep waiting
+      loggedInText = await bodyText(page);
+      if (!looksLikeLogin(page.url(), loggedInText)) return { loggedIn: true, via: "interactive" };
+    } catch (error) {
+      if (/Target closed|has been closed|Protocol error|Session closed/i.test(String(error))) {
+        windowClosed = true;
+        break;
+      }
+      // transient navigation errors while the user steps through the form: keep waiting
     }
   }
-  return { loggedIn: false, reason: "timed out waiting for interactive login" };
+  return {
+    loggedIn: false,
+    reason: windowClosed
+      ? "login window closed before sign-in finished; run --login again and leave the window open until it reports success"
+      : "timed out waiting for interactive login; raise --login-wait or finish sign-in in the window",
+  };
 }
 
 export function countPages(buffer) {
@@ -484,6 +515,9 @@ function runSelfTest() {
   assert("validatePdf accepts a minimal PDF", good.ok);
   assert("countPages finds one page", good.pages === 1);
   assert("sha256 is computed", /^[0-9a-f]{64}$/.test(good.sha256));
+  assert("--login always runs headful", resolveHeadless({ login: true, headless: true }) === false);
+  assert("default mode is headless", resolveHeadless({ login: false, headless: true }) === true);
+  assert("--headful is honoured", resolveHeadless({ login: false, headless: false }) === false);
 
   const failed = checks.filter((check) => !check.ok);
   console.log(JSON.stringify({ ok: failed.length === 0, checks }, null, 2));
@@ -521,7 +555,7 @@ Headless runs need a saved session: run --login once (headful).`);
   };
 
   const context = await chromium.launchPersistentContext(options.profile, {
-    headless: options.headless && !options.login,
+    headless: resolveHeadless(options),
     acceptDownloads: true,
     viewport: { width: 1440, height: 900 },
     args: ["--disable-blink-features=AutomationControlled"],

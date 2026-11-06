@@ -10,6 +10,7 @@
 #   scripts/sync-skills.sh --target all       # render every configured target
 #   scripts/sync-skills.sh --target cursor    # render one target
 #   scripts/sync-skills.sh --install          # install selected target
+#   scripts/sync-skills.sh --install --install-deps   # npm install for installed skills
 #   scripts/sync-skills.sh --check            # parse canonical skills only
 #   scripts/sync-skills.sh --help
 #
