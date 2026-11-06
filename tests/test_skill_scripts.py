@@ -120,7 +120,8 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
                        "class effect"):
             self.assertIn(banned, claims)
         # The ban is a wording rule, not a claim-scope rule: scope stays in review.
-        self.assertIn("review-stage job", claims)
+        self.assertIn("review-stage question", claims)
+        self.assertIn("answers two things only", claims)
 
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
