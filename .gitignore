@@ -23,3 +23,7 @@ auth.json
 outputs/
 dist/
 build/
+
+# Generated DSH rendering and index (rebuild with scripts/sync-skills.sh)
+.dsh/
+SKILL-INDEX.md
