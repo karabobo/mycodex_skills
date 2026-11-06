@@ -17,7 +17,7 @@ description: "通过开放获取、用户已授权机构访问及用户授权的
 
 ### Sci-Hub 兜底（用户已授权）
 
-用户已授权在 EndNote 与合法来源均未命中时使用 Sci-Hub 取得全文。按下列方式执行，并把结果当作**待核验候选**，不作正式出版版本的替代声明。
+用户已授权在 EndNote 与合法来源均未命中时使用 Sci-Hub 取得全文。按下列方式执行，并把结果当作**尚未确认候选**，不作正式出版版本的替代声明。
 
 ```bash
 # 单篇
@@ -30,7 +30,7 @@ node scripts/scihub_fetch.mjs --doi <doi> --out <目标目录> --json
 
 - 脚本自带 Cookie 会话、镜像轮换与 altcha 工作量证明求解，无需浏览器、npm 依赖或第三方验证码服务；默认镜像 `sci-hub.st,sci-hub.ru,sci-hub.se`，可用 `--mirrors` 覆盖。
 - 退出码 `0` 表示全部下载并通过校验，`2` 表示至少一篇未取得，`1` 为用法或 IO 错误。
-- 输出 JSON 含 `doi`、`source: "sci-hub"`、`source_url`、`file`、`bytes`、`pages`（启发式页数，`pagesKnown` 指示是否可靠）、`doiMentionedInPdf`、`sha256` 与逐镜像 `attempts`。把这些字段写进清单：`source` 记 `sci-hub`，`access_route` 记命中的镜像，`version` 记「出版版本推测，待目视核对」。
+- 输出 JSON 含 `doi`、`source: "sci-hub"`、`source_url`、`file`、`bytes`、`pages`（启发式页数，`pagesKnown` 指示是否可靠）、`doiMentionedInPdf`、`sha256` 与逐镜像 `attempts`。把这些字段写进清单：`source` 记 `sci-hub`，`access_route` 记命中的镜像，`version` 记「出版版本推测，尚未确认（需目视核对）」。
 - 校验由脚本做基础项（`%PDF-` 头、非空、`%%EOF` 尾、页数启发式）；打开首页核对标题、DOI、期刊、年份与文章类型仍由本 skill 完成。身份不符时按 `wrong_or_incomplete_pdf` 处理，不采纳。
 - 只下载清单内的 DOI；一次批量控制在合理数量（建议 ≤20），失败后不要无限重试同一镜像。仍失败时记录 `unresolved_after_authorized_sources`，再交 `ablesci-literature-assist` 或请用户决定。
 - 不记录、不回显任何会话凭据；不使用需要付费的镜像或第三方代下服务。
@@ -54,7 +54,7 @@ Use a citation list or slide-traceable manifest as the queue. Scope downloads to
 
 ### Authorized Sci-Hub fallback
 
-The user has authorized Sci-Hub as the last automated route when EndNote, open access, and institutional access all miss. Treat anything it returns as an unverified candidate copy, never as a claim about the publisher version.
+The user has authorized Sci-Hub as the last automated route when EndNote, open access, and institutional access all miss. Treat anything it returns as an not-yet-confirmed candidate copy, never as a claim about the publisher version.
 
 ```bash
 # single DOI
@@ -67,7 +67,7 @@ node ../literature-source-archive/scripts/scihub_fetch.mjs --doi <doi> --out <de
 
 - The script ships with the this skill (`scripts/scihub_fetch.mjs`); resolve the path relative to this skill's directory. It carries its own cookie session, mirror rotation, and altcha proof-of-work solving, so it needs no browser, no npm install, and no third-party captcha service. Default mirrors are `sci-hub.st,sci-hub.ru,sci-hub.se`; override with `--mirrors`.
 - Exit code `0` means every requested PDF was saved and passed validation, `2` means at least one DOI is unresolved, `1` means a usage or IO error.
-- The JSON result exposes `doi`, `source: "sci-hub"`, `source_url`, `file`, `bytes`, `pages` (heuristic, see `pagesKnown`), `doiMentionedInPdf`, `sha256`, and per-mirror `attempts`. Record `source` as `sci-hub`, `access_route` as the mirror that worked, and `version` as "publisher version presumed, pending visual check".
+- The JSON result exposes `doi`, `source: "sci-hub"`, `source_url`, `file`, `bytes`, `pages` (heuristic, see `pagesKnown`), `doiMentionedInPdf`, `sha256`, and per-mirror `attempts`. Record `source` as `sci-hub`, `access_route` as the mirror that worked, and `version` as "publisher version presumed, not yet confirmed; visual check required".
 - The script only validates container basics (`%PDF-` header, nonzero size, `%%EOF` trailer, heuristic page count). Opening the first page to confirm title, DOI, journal, year, and article type remains this skill's job. Reject as `wrong_or_incomplete_pdf` when identity does not match.
 - Download only DOIs that are on the manifest; keep a batch to a reasonable size (about 20) and never loop the same mirror indefinitely. If everything fails, record `unresolved_after_authorized_sources` and hand the item to `ablesci-literature-assist` or back to the user.
 - Never log or echo session credentials, and never use paid mirrors or third-party download brokers.
