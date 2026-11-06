@@ -43,6 +43,7 @@ These rules override generic PowerPoint advice whenever this skill produces, reb
 - **No DOI, URL, access date, or descriptive filler in that text box** — no `在线查看`, `查看原文`, `Available from:`, "accessed on", or similar. Identifiers belong in the evidence manifest, not the visible footnote.
 - Keep the reference text box editable, and after rendering verify that it is complete, inside the slide, unclipped, and not overlapping other content.
 - **No defensive hedging, no disclaimers, no extrapolation on slides.** Banned wording: `不能证明`, `不能推出`, `不能仅凭`, `不足以说明`, `不能简单说`, `不能断言`, `不能确定`, `不能确认`, `不能保证`, `不能承诺`, `不能视为`, `不能当作`, `无法说明`, `无法证明`, `不等于`, `不等同于`, `并非`, `并不是`, `而不是`, `不是…而是…`, `不代表`, `不构成`, `未必`, `尚不能`, `还不能`, `更准确地说`; `仅供参考`, `仅供内部使用`, `本材料不构成医疗建议`, `请咨询专业医师`, `尚需进一步验证`, `有待证实`, `初步结果显示`, `可能有效`, "for reference only", "not medical advice", "further validation is needed"; `所有患者`, `全人群`, `同类药物均可`, `class effect`, `真实世界同样有效`, `可推广至…`.
+  This ban covers defensive or self-correcting wording only; it never removes study-design or analysis-set qualifiers. **Required limits stay on the slide:** `单臂研究`/single-arm, `开放标签`/open-label, `探索性分析`/exploratory, `事后分析`/post hoc, `亚组分析`/subgroup, `单中心`/single-centre, `真实世界研究`/real-world, `非劣效设计`/non-inferiority, `中期分析`/interim, plus population, treatment line, dose, endpoint, cutoff and follow-up constraints. When the evidence is single-arm or exploratory, say so — dropping that qualifier misrepresents the evidence just as much as exaggeration does.
 
 ## Workflow
 
@@ -132,7 +133,7 @@ Avoid:
 - unmatched cross-trial comparisons;
 - presenting changes across data cuts as patient-level risk continually falling.
 
-Use wording such as `观察到`, `提示`, `可能为…提供机制基础`, `结果与…总体一致`, or `探索性分析` when appropriate.
+Use wording such as `观察到`, `提示`, `可能为…提供机制基础`, `结果与…总体一致`, or `探索性分析` when appropriate. Design and analysis-set qualifiers — `单臂研究`, `开放标签`, `探索性分析`, `事后分析`, `亚组分析`, `真实世界研究`, `中期分析` — are required whenever they bound the claim; they are limits, not hedging.
 
 Default content-page anatomy:
 
@@ -196,7 +197,7 @@ Do not advance past a gate when a critical item is unresolved.
 1. **Evidence gate:** every key claim has a source and evidence status.
 2. **Storyline gate:** every section has a causal role and handoff.
 3. **Blueprint gate:** every slide has one job and a defined source/visual.
-4. **Medical gate:** copy does not exceed the evidence.
+4. **Medical gate:** copy does not exceed the evidence, and every design or analysis-set qualifier the source requires (single-arm, open-label, exploratory, post hoc, subgroup, real-world, interim) is present on the slide.
 5. **Editability gate:** key content is not flattened.
 6. **Visual gate:** latest render has no material defect or misleading emphasis, the bottom-left reference list is one intact text box in NLM short style, and generated objects carry no grouping locks.
 

@@ -120,6 +120,17 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
                        "仅供参考", "仅供内部使用", "尚需进一步验证", "class effect"):
             self.assertIn(banned, claims)
 
+    def test_pptx_keeps_required_design_qualifiers(self):
+        pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
+        claims = self.read("skills", "medical-pptx-writing", "references", "evidence-and-claims.md")
+        for text in (pptx, claims):
+            for qualifier in ("单臂研究", "开放标签", "探索性分析", "事后分析", "亚组分析",
+                              "真实世界研究", "中期分析"):
+                self.assertIn(qualifier, text)
+        self.assertIn("never removes study-design or analysis-set qualifiers", pptx)
+        self.assertIn("Required qualifiers are not hedging", claims)
+        self.assertIn("Medical gate", pptx)
+
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
         visual = self.read("skills", "medical-pptx-writing", "references", "visual-and-editable-production.md")
