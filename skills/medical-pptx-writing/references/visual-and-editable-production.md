@@ -85,10 +85,24 @@ unzip -p deck.pptx 'ppt/slides/slide*.xml' | grep -o 'noGrp="1"' | wc -l
 
 - Leave grouping state alone: do not group, ungroup, or "merge into one object" unless the user asks. Independent objects stay independently editable.
 
+## Font defaults
+
+- Chinese text: `微软雅黑` (Microsoft YaHei). Latin text: `Arial`.
+- In OOXML, write both slots on every run and on the master defaults:
+
+  ```xml
+  <a:rPr ...><a:latin typeface="Arial"/><a:ea typeface="微软雅黑"/><a:cs typeface="Arial"/></a:rPr>
+  ```
+
+- Set the pair once in `ppt/theme/theme1.xml` (`<a:majorFont>`/`<a:minorFont>`) so shapes created later inherit it; per-run overrides are then only needed for exceptions.
+- A deck that inherits Calibri or 等线 because the theme was never touched is a defect: it renders differently on machines without those fonts and breaks the intended look. Spot-check with `unzip -p deck.pptx ppt/theme/theme1.xml | grep -o 'typeface="[^"]*"' | sort -u`.
+- Do not introduce a third family for emphasis or headings; differentiate with size, weight, and color.
+- Fonts are named, not embedded by default. If the deliverable must look identical on a machine without 微软雅黑/Arial, say so rather than silently substituting.
+
 ## Bottom-left reference list
 
 - Build exactly one text box per slide, anchored bottom-left, spanning the content width above the bottom margin, aligned with the left text margin.
 - One paragraph per reference in NLM short style (`nlm_short.ens`): authors, title, journal, year, volume(issue), pages or article number. Apply NLM author truncation (first six authors then "et al.") as the style does.
-- Small type (about 6–8 pt), tight line spacing, no bullets, no images, no per-reference shapes.
+- Type size 8 pt by default; tighten line spacing rather than dropping size. Go to 7 pt only when the list genuinely cannot fit, and never below 7 pt. No bullets, no images, no per-reference shapes.
 - Never include DOI, URL, access date, or descriptive filler such as `在线查看`, `查看原文`, `Available from:`, or "accessed on". Keep those in the evidence manifest.
 - After the render pass, confirm the box is complete, unclipped, inside the slide, and not covered by other objects.

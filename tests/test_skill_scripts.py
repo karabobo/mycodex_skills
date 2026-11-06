@@ -111,6 +111,21 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         self.assertIn("noGrp", workflow)
         self.assertIn("nlm_short.ens", workflow)
 
+    def test_pptx_font_and_size_defaults(self):
+        pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
+        visual = self.read("skills", "medical-pptx-writing", "references", "visual-and-editable-production.md")
+        for text in (pptx, visual):
+            self.assertIn("微软雅黑", text)
+            self.assertIn("Arial", text)
+        self.assertIn("<a:ea typeface=\"微软雅黑\"/>", visual)
+        # The reference list defaults to 8 pt, not the older 6-8 pt range.
+        self.assertIn("8 pt", pptx)
+        self.assertNotIn("6–8 pt", visual)
+        for lang in ("zh", "en"):
+            workflow = self.read("skills", f"medical-reference-workflow-{lang}", "SKILL.md")
+            self.assertIn("微软雅黑", workflow)
+            self.assertIn("Arial", workflow)
+
 
 if __name__ == "__main__":
     unittest.main()

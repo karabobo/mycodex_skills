@@ -14,7 +14,8 @@ When two or more stages exchange a manifest, read [references/handoff-contract.m
 These user-standing constraints apply whenever a deck is produced or repaired in this workflow; for full authoring, hand the deck to `medical-pptx-writing`.
 
 - Never add `noGrp`（禁止组合）, lock, or "do not select" markers to generated text boxes, vector shapes, connectors, icons, or groups. Objects stay groupable and freely editable, and grouping is left to the user at edit time.
-- The bottom-left reference list is one single text box per slide — not several text boxes, one shape per reference, or an image. Use standard NLM short style matching `/Applications/EndNote 2025/Styles/nlm_short.ens`: authors, title, journal, year, volume(issue), pages or article number.
+- Font defaults: 微软雅黑 (Microsoft YaHei) for Chinese text, Arial for Latin text, written on both slots (`<a:latin typeface="Arial"/>` plus `<a:ea typeface="微软雅黑"/>`) and set in the theme/master so nothing inherits Calibri or 等线.
+- The bottom-left reference list is one single text box per slide, 8 pt by default — not several text boxes, one shape per reference, or an image. Use standard NLM short style matching `/Applications/EndNote 2025/Styles/nlm_short.ens`: authors, title, journal, year, volume(issue), pages or article number.
 - Do not put DOI, URL, access date, or descriptive filler such as `在线查看`, `查看原文`, or `Available from:` into that text box; identifiers belong in the manifest.
 - Keep the box editable and verify after rendering that it is complete, unclipped, and unobstructed. A quick check for accidental locks: `unzip -p deck.pptx 'ppt/slides/slide*.xml' | grep -c 'noGrp="1"'` should be 0 for generated slides.
 
