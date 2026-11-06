@@ -120,6 +120,18 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
                        "仅供参考", "仅供内部使用", "尚需进一步验证", "class effect"):
             self.assertIn(banned, claims)
 
+    def test_pptx_ships_page_recipes(self):
+        pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
+        kit = self.read("skills", "medical-pptx-writing", "references", "page-kit.md")
+        self.assertIn("references/page-kit.md", pptx)
+        self.assertIn("## Page recipes", pptx)
+        for page in ("封面", "章节页", "疾病负担", "未满足需求", "机制", "关键研究设计",
+                     "疗效主图", "亚组与人群", "安全性", "指南与定位", "对比",
+                     "临床落地", "总结"):
+            self.assertIn(page, kit)
+        self.assertIn("数字三件套", kit)
+        self.assertIn("一句话临床含义", kit)
+
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
         visual = self.read("skills", "medical-pptx-writing", "references", "visual-and-editable-production.md")

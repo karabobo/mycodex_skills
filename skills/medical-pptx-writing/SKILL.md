@@ -25,12 +25,12 @@ The core sequence is:
 2. Make each section answer a question created by the previous section.
 3. Map every non-trivial medical claim to a source before finalizing copy.
 4. Match population, analysis set, denominator, endpoint, cutoff, and statistical definition—not only the headline number.
-5. Separate direct evidence, exploratory findings, mechanistic interpretation, and inference.
-6. Use concise, presentation-ready Chinese or English; retain necessary medical qualifiers.
+5. Say what the data support at the strength the data allow; keep direct evidence, exploratory findings, mechanism, and inference distinct.
+6. Use concise, presentation-ready Chinese or English.
 7. Build a native, editable PPTX. Do not flatten whole slides into images.
 8. Use visual emphasis only to clarify evidence, never to exaggerate it.
 9. Verify the final PPTX by rendering every slide and inspecting the visible result.
-10. Keep internal review language out of audience-facing titles, key messages, and result boxes unless a short qualification is necessary to prevent material misunderstanding.
+10. Keep internal review language out of audience-facing titles, key messages, and result boxes.
 11. Use brand language mainly on covers, chapter dividers, and closing pages; keep evidence pages medically auditable and restrained.
 
 ## Layout and reference-list constraints (house rules)
@@ -43,6 +43,28 @@ These rules override generic PowerPoint advice whenever this skill produces, reb
 - **No DOI, URL, access date, or descriptive filler in that text box** — no `在线查看`, `查看原文`, `Available from:`, "accessed on", or similar. Identifiers belong in the evidence manifest, not the visible footnote.
 - Keep the reference text box editable, and after rendering verify that it is complete, inside the slide, unclipped, and not overlapping other content.
 - **No defensive hedging, no disclaimers, no extrapolation on slides.** Banned wording: `不能证明`, `不能推出`, `不能仅凭`, `不足以说明`, `不能简单说`, `不能断言`, `不能确定`, `不能确认`, `不能保证`, `不能承诺`, `不能视为`, `不能当作`, `无法说明`, `无法证明`, `不等于`, `不等同于`, `并非`, `并不是`, `而不是`, `不是…而是…`, `不代表`, `不构成`, `未必`, `尚不能`, `还不能`, `更准确地说`; `仅供参考`, `仅供内部使用`, `本材料不构成医疗建议`, `请咨询专业医师`, `尚需进一步验证`, `有待证实`, `初步结果显示`, `可能有效`, "for reference only", "not medical advice", "further validation is needed"; `所有患者`, `全人群`, `同类药物均可`, `class effect`, `真实世界同样有效`, `可推广至…`.
+
+## Page recipes
+
+Pick the page type first, then fill it in. Every page type answers one question and its title is that answer. Full skeletons, title patterns and copy examples are in [references/page-kit.md](references/page-kit.md).
+
+| Page type | The one job | Skeleton |
+|---|---|---|
+| Cover | State the single claim of the talk | Title of 18 characters or fewer + subtitle + brand corner |
+| Section divider | Pose the question this chapter answers | Number + one-line question |
+| Disease burden | Show the size of the clinical problem | One chart + at most three numbers + meaning line |
+| Unmet need | Show why current care falls short | Current option, its limit, the patient consequence |
+| Mechanism | Explain why the approach could work | Pathway diagram, five nodes or fewer, one landing line |
+| Study design | Show what the trial can answer | Population, arms, primary endpoint |
+| Efficacy | Deliver the core evidence | Main chart + HR/ORR/mOS numbers + meaning line |
+| Subgroup | Show who benefits | Forest plot + one interaction note |
+| Safety | Show what the risk looks like and how it is managed | AE spectrum + management path |
+| Guideline position | Place the option in the treatment pathway | Recommendation level + line of therapy |
+| Comparison | Position against existing choices | Head-to-head data only |
+| Clinical use | Answer how the option is used in practice | Population, dosing and monitoring, situations to avoid |
+| Summary | Three takeaways | Three conclusions + one outlook, no new evidence |
+
+Shared skeleton: title zone 0-12%, evidence 12-76%, meaning line 76-86%, reference box 86-94%, 5% safe margin. One visual centre per page; split a page rather than shrinking its main figure.
 
 ## Workflow
 
@@ -71,11 +93,11 @@ For each module record:
 
 ### 3. Build the evidence map and claim ledger
 
-Prefer label/regulatory documents, original trials and supplements, updated analyses, guidelines, consensus statements, systematic reviews, then RWE. Do not force a nearby source to support a broader claim.
+Prefer label/regulatory documents, original trials and supplements, updated analyses, guidelines, consensus statements, systematic reviews, then RWE.
 
 Create a claim ledger with at least:
 
-`slide/topic | proposed claim | population/context | endpoint/data | source location | evidence status | wording limit`
+`slide/topic | proposed claim | population/context | endpoint/data | source location | evidence status`
 
 Read [references/evidence-and-claims.md](references/evidence-and-claims.md) when sourcing, extracting, or validating medical claims.
 
@@ -94,6 +116,8 @@ Avoid parallel lists of benefits. Every chapter must contain:
 5. **Handoff question** — What must the next chapter answer?
 
 Read [references/storyline-and-blueprint.md](references/storyline-and-blueprint.md) when creating or repairing narrative structure.
+
+Choose each slide's page type from [references/page-kit.md](references/page-kit.md) before designing it.
 
 Select the dominant narrative mode before building chapters:
 
@@ -121,18 +145,9 @@ Rules:
 
 ### 6. Write presentation-ready medical copy
 
-Use compact, natural, professional language. Preserve population, setting, endpoint, and qualification where required.
+Use compact, natural, professional language. Preserve population, setting, and endpoint.
 
-Avoid:
-
-- translation-like syntax and long academic paragraphs;
-- unsupported superlatives or causal language;
-- calling exploratory subgroups “advantage populations” without interaction evidence;
-- treating RWE as confirmation of an RCT;
-- unmatched cross-trial comparisons;
-- presenting changes across data cuts as patient-level risk continually falling.
-
-Use wording such as `观察到`, `提示`, `可能为…提供机制基础`, `结果与…总体一致`, or `探索性分析` when appropriate.
+Write the conclusion, then the number, then the meaning. Avoid unsupported superlatives, unmatched cross-trial comparisons, and exploratory subgroups presented as preferred populations. A design or analysis-set word stays only where it changes how the number reads.
 
 Default content-page anatomy:
 
@@ -172,7 +187,7 @@ Run separate passes for:
 - hierarchy, readability, and visual truthfulness;
 - editability and master/layout consistency.
 
-Do not let a visual redesign silently change a denominator, endpoint, scale, confidence interval, or statistical interpretation.
+A visual pass never changes a denominator, endpoint, scale, confidence interval, or statistical interpretation.
 
 ### 10. Render and verify
 
@@ -219,7 +234,7 @@ Report any intentionally rasterized components and any remaining evidence or edi
 Use these prompts in order when the user asks for end-to-end authoring:
 
 1. **Brief:** define audience, occasion, duration, medical objective, desired audience change, evidence boundary, template, brand, and data cutoff.
-2. **Evidence map:** extract population, intervention, comparator, endpoint, result, analysis set, cutoff, source location, and wording limit.
+2. **Evidence map:** extract population, intervention, comparator, endpoint, result, analysis set, cutoff, and source location.
 3. **Storyline:** choose a dominant narrative mode and build a causal chapter chain with explicit handoffs.
 4. **Blueprint:** assign each slide one purpose, one conclusion title, evidence, clinical meaning, transition, and source.
 5. **Copy:** write concise audience-facing medical copy without internal review language.
