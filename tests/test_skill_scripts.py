@@ -131,6 +131,10 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
             self.assertIn(page, kit)
         self.assertIn("数字三件套", kit)
         self.assertIn("一句话临床含义", kit)
+        self.assertIn("标题怎么写", kit)
+        self.assertIn("结论标题", kit)
+        self.assertIn("只读标题", kit)
+        self.assertIn("Action titles", kit)
 
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
