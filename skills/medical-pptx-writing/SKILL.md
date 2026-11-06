@@ -97,7 +97,7 @@ Prefer label/regulatory documents, original trials and supplements, updated anal
 
 Create a claim ledger with at least:
 
-`slide/topic | proposed claim | population/context | endpoint/data | source location | evidence status`
+`slide/topic | proposed claim | population/context | endpoint/data | source location`
 
 Read [references/evidence-and-claims.md](references/evidence-and-claims.md) when sourcing, extracting, or validating medical claims.
 
@@ -208,7 +208,7 @@ Read [references/delivery-and-qa.md](references/delivery-and-qa.md) before final
 
 Do not advance past a gate when a critical item is unresolved.
 
-1. **Evidence gate:** every key claim has a source and evidence status.
+1. **Evidence gate:** every key claim has a source.
 2. **Storyline gate:** every section has a causal role and handoff.
 3. **Blueprint gate:** every slide has one job and a defined source/visual.
 4. **Medical gate:** copy does not exceed the evidence.
