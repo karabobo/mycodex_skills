@@ -152,6 +152,11 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         # The reference list defaults to 8 pt, not the older 6-8 pt range.
         self.assertIn("8 pt", pptx)
         self.assertNotIn("6–8 pt", visual)
+        # Titles default to 24 pt inside a 20-32 pt band.
+        self.assertIn("24 pt", pptx)
+        self.assertIn("20–32 pt", pptx)
+        self.assertIn("24 pt", visual)
+        self.assertIn("20–32 pt", visual)
         workflow = self.read("skills", "medical-reference-workflow", "SKILL.md")
         zh_part, en_part = workflow.split("## English", 1)
         for part in (zh_part, en_part):

@@ -97,6 +97,7 @@ unzip -p deck.pptx 'ppt/slides/slide*.xml' | grep -o 'noGrp="1"' | wc -l
 - Set the pair once in `ppt/theme/theme1.xml` (`<a:majorFont>`/`<a:minorFont>`) so shapes created later inherit it; per-run overrides are then only needed for exceptions.
 - A deck that inherits Calibri or 等线 because the theme was never touched is a defect: it renders differently on machines without those fonts and breaks the intended look. Spot-check with `unzip -p deck.pptx ppt/theme/theme1.xml | grep -o 'typeface="[^"]*"' | sort -u`.
 - Do not introduce a third family for emphasis or headings; differentiate with size, weight, and color.
+- Title size: 24 pt by default, 20–32 pt allowed. Anything below 20 pt is a defect — shorten the title or split the slide instead. Everything else (body, meaning line, labels) sits below the title and never goes above 32 pt.
 - Fonts are named, not embedded by default. If the deliverable must look identical on a machine without 微软雅黑/Arial, say so rather than silently substituting.
 
 ## Bottom-left reference list
