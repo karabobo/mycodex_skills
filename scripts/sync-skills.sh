@@ -11,6 +11,7 @@
 #   scripts/sync-skills.sh                 # render into .dsh/skills
 #   scripts/sync-skills.sh --install       # also install into ~/.dsh/skills
 #   scripts/sync-skills.sh --check         # validate only
+#   scripts/sync-skills.sh --target codex # render a named agent target
 #   scripts/sync-skills.sh --help
 #
 set -euo pipefail

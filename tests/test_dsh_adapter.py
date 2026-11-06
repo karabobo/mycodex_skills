@@ -28,6 +28,7 @@ sys.path.insert(0, os.path.join(REPO_ROOT, "scripts"))
 sys.path.insert(0, os.path.join(REPO_ROOT, "scripts", "lib"))
 
 from adapters.dsh import _rebalance_description, _split_description, render_all  # noqa: E402
+from adapters.registry import get_adapter  # noqa: E402
 from lib.skill_ir import (  # noqa: E402
     CATALOG_DESCRIPTION_MAX_LENGTH,
     SkillParseError,
@@ -236,6 +237,15 @@ class TestRenderedTree(unittest.TestCase):
             rendered = handle.read()
         for legacy in ("disableModelInvocation", "modelInvocable", "userInvocable"):
             self.assertNotIn(legacy, rendered)
+
+
+class TestTargetRegistry(unittest.TestCase):
+    def test_named_adapters_are_separate(self):
+        self.assertIsNot(get_adapter("dsh"), get_adapter("codex"))
+
+    def test_unknown_adapter_is_actionable(self):
+        with self.assertRaisesRegex(ValueError, "unknown target"):
+            get_adapter("unknown")
 
 
 class TestCanonicalRepo(unittest.TestCase):

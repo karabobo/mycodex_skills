@@ -7,6 +7,12 @@ description: 用中文统筹医学 PPT 参考文献全流程：引文提取、DO
 
 仅执行用户要求的阶段。“收集 PDF”本身不代表授权核验所有医学论断、发布文献求助或采纳他人上传文件。
 
+## PPTX 版式与参考文献约束
+
+- 自定义生成的文本框、矢量形状、连接线、图标及其他形状必须保持**不可组合**；不要调用组合/取消组合操作，也不要把多个对象合并成一个不可编辑对象。除非用户明确要求，保留每个对象独立可编辑。
+- 每页左下角的参考文献列表必须是**一个完整的文本框**，不要拆成多个文本框、逐条独立形状或图片。文本框内使用标准 NLM short 格式，样式参考本机 `/Applications/EndNote 2025/Styles/nlm_short.ens`；不要在参考文献中加入 DOI、URL、`在线查看` 等多余描述性文字。先核对题录，再按该样式输出作者、题名、期刊、年份、卷期、页码/文章号等必要字段。
+- 参考文献文本框应保持可编辑，并在渲染后检查左下角是否完整显示、无溢出或遮挡。
+
 整理 PPTX 文献包（含 PDF 命名）或两个及以上阶段共用清单时，修改前先读 [references/handoff-contract.md](references/handoff-contract.md)。该契约区分一篇文献、每次 PPT 引用和每条论断，不要求为此重建用户现有表格。
 
 涉及论断核对或高亮时，再读 [references/evidence-review.md](references/evidence-review.md)，向子阶段传递 `highlight_mode`、核对范围及 `annotation_policy`，不重置用户选择。先验证指定路径和既有可用解释器；环境故障只做有限定位并及时报告，不记作文献不存在。
@@ -16,7 +22,7 @@ description: 用中文统筹医学 PPT 参考文献全流程：引文提取、DO
 | PPT 引文提取 | `pptx-citation-inventory-zh` | 全部渲染页已核对，原始写法及重复出现页码保留 |
 | DOI 与题录核实 | `bibliographic-metadata-resolver-zh` | 每篇作品有已核实身份或明确的未解决原因 |
 | 本地 EndNote 检索 | `endnote-pdf-retrieval-zh` | 指定库只读检索，复制件哈希核对 |
-| 联网来源查找 | `literature-source-archive-zh` | 未解决文献逐来源核查，PDF 归档注明来源与版本 |
+| 联网来源查找 | `literature-source-archive-zh` | EndNote 未命中后，仅查合法开放获取或用户已授权机构访问；逐来源核查，PDF 归档注明来源与版本 |
 | 英文科研通求助，按需 | `ablesci-literature-assist-zh` | 每次一篇 DOI，核对题录及文件后再决定是否采纳 |
 | 全套页面论断审计，按需 | `pdf-claim-highlighter-zh` | 范围内每项论断有判断及证据位置 |
 | 逐篇精选文献高亮，按需 | `selective-literature-highlight-zh` | 按已授权模式标短片段，证据判定不变；语义与位置分别验收 |

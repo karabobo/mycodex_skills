@@ -141,9 +141,8 @@ The pipeline follows the bigpowers pattern: **Parse → IR → Render**.
 - `scripts/lib/skill_ir.py` parses each `SKILL.md` into a `SkillIR` record —
   a platform-neutral dataclass. Frontmatter parsing is a minimal flat-YAML
   reader so the repo needs no dependencies.
-- `scripts/adapters/dsh.py` turns records into a DSH skill tree. It is the
-  only place DSH-specific rules live, so adding another target never means
-  touching the parser.
+- `scripts/adapters/` contains one renderer per agent target. `dsh.py` applies DeepSeek Harness rules; `codex.py` materializes a Codex-target tree. `registry.py` selects a named adapter, so each target is adapted once and future syncs regenerate it instead of repeatedly editing skill bodies.
+- Select a target explicitly: `./scripts/sync-skills.sh --target dsh` or `./scripts/sync-skills.sh --target codex --output .agents/codex/skills`. Adding a new agent means adding one adapter module and registering it; the canonical skills and parser remain unchanged.
 
 ## Privacy
 

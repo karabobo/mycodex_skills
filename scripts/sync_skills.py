@@ -29,7 +29,7 @@ from lib.skill_ir import (  # noqa: E402
     iterate_skills,
     parse_skill,
 )
-from adapters.dsh import render_all  # noqa: E402
+from adapters.registry import get_adapter  # noqa: E402
 
 
 def resolve_skills_root() -> str:
@@ -84,8 +84,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Render the canonical skills for DSH.")
     parser.add_argument("--skills-root", default=None, help="canonical skills directory")
     parser.add_argument("--output", default=None, help="rendered output directory")
-    parser.add_argument("--install", action="store_true", help="also install into ~/.dsh/skills")
-    parser.add_argument("--install-root", default=None, help="override the DSH install root")
+    parser.add_argument("--install", action="store_true", help="also install into the selected target root")
+    parser.add_argument("--install-root", default=None, help="override the install root")
+    parser.add_argument("--target", choices=("dsh", "codex"), default="dsh", help="agent target adapter")
     parser.add_argument("--check", action="store_true", help="validate the canonical tree only")
     parser.add_argument(
         "--max-description",
@@ -96,7 +97,14 @@ def main() -> int:
     args = parser.parse_args()
 
     skills_root = args.skills_root or resolve_skills_root()
-    output_root = args.output or resolve_default_output()
+    if args.output:
+        output_root = args.output
+    elif args.target == "dsh":
+        output_root = resolve_default_output()
+    else:
+        output_root = os.path.join(REPO_ROOT, ".agents", args.target, "skills")
+
+    adapter = get_adapter(args.target)
 
     records, errors = load_records(skills_root)
     for error in errors:
@@ -112,7 +120,7 @@ def main() -> int:
         print(f"sync_skills: {len(records)} skills parsed cleanly from {skills_root}")
         return 0
 
-    written = render_all(records, output_root, args.max_description)
+    written = adapter.render_all(records, output_root, args.max_description)
     print(f"sync_skills: rendered {len(written)} skills -> {output_root}")
 
     over = [r.name for r in records if len(r.description) > args.max_description]
