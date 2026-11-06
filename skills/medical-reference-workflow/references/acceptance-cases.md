@@ -16,7 +16,7 @@
 自动PDF结构检查使用运行时生成的合成PDF：
 
 ```bash
-python -m unittest discover -s skills/selective-literature-highlight-zh/tests -v
+python -m unittest discover -s skills/selective-literature-highlight/tests -v
 ```
 
 依赖 PyMuPDF；测试不读取用户文献。自动检查不替代上表的语义验收。

@@ -19,7 +19,7 @@ import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SCIHUB_SCRIPT = os.path.join(ROOT, "skills", "literature-source-archive-zh", "scripts", "scihub_fetch.mjs")
+SCIHUB_SCRIPT = os.path.join(ROOT, "skills", "literature-source-archive", "scripts", "scihub_fetch.mjs")
 ABLESCI_SCRIPT = os.path.join(ROOT, "skills", "ablesci-literature-assist", "scripts", "ablesci_batch.mjs")
 ABLESCI_SKILL_DIR = os.path.dirname(os.path.dirname(ABLESCI_SCRIPT))
 
@@ -87,8 +87,8 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
             return handle.read()
 
     def test_archive_skills_describe_authorized_scihub_fallback(self):
-        zh = self.read("skills", "literature-source-archive-zh", "SKILL.md")
-        en = self.read("skills", "literature-source-archive-en", "SKILL.md")
+        merged = self.read("skills", "literature-source-archive", "SKILL.md")
+        zh = en = merged
         self.assertIn("Sci-Hub", zh)
         self.assertIn("用户已授权", zh)
         self.assertIn("Authorized Sci-Hub fallback", en)
@@ -96,14 +96,14 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         self.assertNotIn("不使用 Sci-Hub", zh)
 
     def test_endnote_miss_hands_off_to_archive_with_scihub(self):
-        zh = self.read("skills", "endnote-pdf-retrieval-zh", "SKILL.md")
-        self.assertIn("literature-source-archive-zh", zh)
+        zh = self.read("skills", "endnote-pdf-retrieval", "SKILL.md")
+        self.assertIn("literature-source-archive", zh)
         self.assertIn("unresolved_after_authorized_sources", zh)
         self.assertNotIn("不要使用 Sci-Hub", zh)
 
     def test_pptx_grouping_rule_is_not_inverted(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")
-        workflow = self.read("skills", "medical-reference-workflow-zh", "SKILL.md")
+        workflow = self.read("skills", "medical-reference-workflow", "SKILL.md")
         for text in (pptx, workflow):
             self.assertNotIn("必须保持**不可组合**", text)
         self.assertIn("noGrp", pptx)
@@ -130,10 +130,26 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         # The reference list defaults to 8 pt, not the older 6-8 pt range.
         self.assertIn("8 pt", pptx)
         self.assertNotIn("6–8 pt", visual)
-        for lang in ("zh", "en"):
-            workflow = self.read("skills", f"medical-reference-workflow-{lang}", "SKILL.md")
-            self.assertIn("微软雅黑", workflow)
-            self.assertIn("Arial", workflow)
+        workflow = self.read("skills", "medical-reference-workflow", "SKILL.md")
+        zh_part, en_part = workflow.split("## English", 1)
+        for part in (zh_part, en_part):
+            self.assertIn("微软雅黑", part)
+            self.assertIn("Arial", part)
+
+    def test_skills_are_single_bilingual_documents(self):
+        names = sorted(n for n in os.listdir(os.path.join(ROOT, "skills"))
+                       if os.path.isdir(os.path.join(ROOT, "skills", n)) and not n.startswith("."))
+        self.assertEqual(len(names), 10, names)
+        for name in names:
+            self.assertFalse(name.endswith(("-zh", "-en")), name)
+        for name in ("bibliographic-metadata-resolver", "endnote-pdf-retrieval",
+                     "literature-source-archive", "medical-reference-workflow",
+                     "pdf-claim-highlighter", "pptx-citation-inventory",
+                     "selective-literature-highlight", "ablesci-literature-assist"):
+            text = self.read("skills", name, "SKILL.md")
+            self.assertIn("## 中文", text, name)
+            self.assertIn("## English", text, name)
+            self.assertIn(f"name: {name}", text, name)
 
 
 if __name__ == "__main__":

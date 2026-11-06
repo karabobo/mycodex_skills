@@ -1,11 +1,23 @@
 ---
 name: ablesci-literature-assist
-description: "Use only for English-language AbleSci/科研通 literature mutual-aid workflows: submitting one English DOI/article at a time on ablesci.com/assist/create, handling existing uploaded requests before new submissions, verifying extracted English article metadata, opening assist details, downloading uploaded PDF files through normal nodes, saving and validating PDFs, and optionally using macOS Keychain-stored AbleSci credentials without exposing passwords. Do not use this skill for Chinese-language or other non-English literature."
+description: "英文文献的科研通 AbleSci 求助、已有上传文件下载与核验，支持无头浏览器与批量执行；中文或其他非英文文献不适用. / AbleSci/科研通 mutual-aid requests for English literature only: one DOI at a time, download and verify uploaded PDFs, headless and batch mode included."
 ---
 
-# AbleSci Literature Assist
+# 科研通文献求助 / AbleSci literature assist
 
-## Core Rules
+## 中文
+
+本文件的 English 一节是登录、逐篇求助、普通下载线路、PDF 核验、积分与采纳边界的唯一操作规范；下面的中文要点只是触发与交接提示，不另造规则。
+
+无头或批量执行时调用 `../ablesci-literature-assist/scripts/ablesci_batch.mjs`：首次需 `--login` 交互登录一次以保存会话，其后可 `--headless`；发布求助必须显式 `--publish`，采纳文件必须显式 `--accept`，其余规则与英文版一致。
+
+只处理英文文献，并从待下载清单选取一篇 DOI。核对科研通提取的题名、DOI 和期刊后再按用户授权发布。下载后确认 PDF 身份、页数和完整性，归档并记录来源；错误文件不采纳。验证码由用户完成；优先普通线路，未经逐篇明确授权不使用扣积分高速通道。若用户只要求下载，则保留求助待采纳状态并说明。
+
+将求助详情、最终文件、验证结果及是否采纳写回引文清单；不记录账号密码、Cookie、临时下载链接。此阶段不能代替原文论断核验。
+
+## English
+
+### Core Rules
 
 - Use this skill only for English-language literature. If the requested article title, journal metadata, or expected full text is Chinese-language or another non-English language, stop and use a different workflow.
 - Prefer the scripted path (`scripts/ablesci_batch.mjs`) for batch, unattended, or repeated work; use the browser or UI-control tool for one-off interaction. Start from the current tab when it is already on `ablesci.com`.
@@ -16,7 +28,7 @@ description: "Use only for English-language AbleSci/科研通 literature mutual-
 - Do not use Sci-Hub or other paywall-circumvention sites from this workflow.
 - Do not use AbleSci `高速通道` unless the user explicitly authorizes spending points for that file. Prefer normal `线路1/线路2/线路3`.
 
-## Credential Handling
+### Credential Handling
 
 Use this lookup pattern only when the user has explicitly authorized saved AbleSci credentials:
 
@@ -33,7 +45,7 @@ Recommended Keychain fields:
 - Password: the AbleSci password
 - Comment: `AbleSci login for Codex browser automation`
 
-## Input Preparation
+### Input Preparation
 
 Before posting requests, identify the source list of missing PDFs:
 
@@ -42,14 +54,14 @@ Before posting requests, identify the source list of missing PDFs:
 - Process one DOI at a time because AbleSci may allow only one active unprocessed request.
 - Keep a small run log with DOI, AbleSci detail URL, file name, save path, PDF validation status, and whether the file was accepted.
 
-## Login And Navigation
+### Login And Navigation
 
 1. Open `https://www.ablesci.com/assist/create`.
 2. If redirected to login, use the current browser session or Keychain credential. Submit only the login fields needed for AbleSci.
 3. If a verification challenge appears, pause and ask the user to complete it.
 4. After login, return to `https://www.ablesci.com/assist/create`.
 
-## Headless And Batch Mode (script)
+### Headless And Batch Mode (script)
 
 `scripts/ablesci_batch.mjs` drives Chromium through Playwright with a persistent profile, so submission, download, and acceptance can run without a human at the screen. Only the first login needs interaction.
 
@@ -100,7 +112,7 @@ Rules that still apply to the script:
 - Selectors are matched defensively across several candidates. After an AbleSci redesign, run `--inspect` and update the `SELECTORS` table instead of hand-driving the site.
 - Exit code `0` = everything verified, `2` = needs review (login missing, selector failure, invalid PDF), `1` = script error.
 
-## Clear Existing Uploaded Requests
+### Clear Existing Uploaded Requests
 
 If the create page says the account can only request one document at a time or shows a link such as `点击这里查看`:
 
@@ -112,7 +124,7 @@ If the create page says the account can only request one document at a time or s
 
 If the user has not authorized accepting uploaded files, ask before accepting because this changes request status.
 
-## Submit A New DOI Request
+### Submit A New DOI Request
 
 1. On `assist/create`, enter the DOI in the DOI input box.
 2. Click `智能提取文献信息`.
@@ -125,7 +137,7 @@ If the user has not authorized accepting uploaded files, ask before accepting be
 
 If metadata is missing or mismatched, do not post blindly. Either edit the fields if AbleSci supports it and the correct metadata is known, or ask the user.
 
-## Download Uploaded Files
+### Download Uploaded Files
 
 On the assist detail page:
 
@@ -139,7 +151,7 @@ On the assist detail page:
 5. If the page says `文件调取成功，已经通过 线路X 自动下载`, use that normal line result.
 6. If browser auto-download is not visible locally, use the page's manual link labeled like `这里（或鼠标右键"另存为..."）` to save the file. Do not expose the tokenized file URL in chat.
 
-## Save And Validate PDFs
+### Save And Validate PDFs
 
 Save PDFs into the user's chosen folder. If no folder is provided, use a clear subfolder such as:
 
@@ -157,7 +169,7 @@ After saving:
 
 If validation fails, do not accept the uploaded file. Try another normal node or ask the user whether to reject/request a new upload.
 
-## Accept Or Leave Pending
+### Accept Or Leave Pending
 
 - If the user explicitly asked to finish/accept the request, return to the detail page and click `采纳文件` only after PDF validation passes.
 - If AbleSci shows a reminder such as `恭喜您，已经有人上传了文件，请在 48 小时内查看并审核`, click `确定` before trying to accept.
@@ -166,7 +178,7 @@ If validation fails, do not accept the uploaded file. Try another normal node or
 - If the user only asked to download, leave the request pending and report that the PDF has been saved and verified.
 - If the uploaded PDF is wrong, incomplete, corrupted, or not a PDF, do not accept it; use AbleSci's reject/feedback flow only after user authorization.
 
-## Reporting Back
+### Reporting Back
 
 Report only the useful result:
 

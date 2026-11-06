@@ -21,17 +21,16 @@ Do not archive:
 
 ```text
 skills/                        # canonical source (Codex-flavoured)
-  excel-forest-plot/
   ablesci-literature-assist/
-  ablesci-literature-assist-zh/
-  pptx-citation-inventory-{en,zh}/
-  bibliographic-metadata-resolver-{en,zh}/
-  endnote-pdf-retrieval-{en,zh}/
-  literature-source-archive-{en,zh}/
-  pdf-claim-highlighter-{en,zh}/
-  selective-literature-highlight-{en,zh}/
-  medical-reference-workflow-{en,zh}/
+  bibliographic-metadata-resolver/
+  endnote-pdf-retrieval/
+  excel-forest-plot/
+  literature-source-archive/
   medical-pptx-writing/
+  medical-reference-workflow/
+  pdf-claim-highlighter/
+  pptx-citation-inventory/
+  selective-literature-highlight/
 scripts/
   sync_from_codex_skills.sh    # pull new skills from ~/.codex/skills
   sync-skills.sh               # render + validate + index for DSH
@@ -49,12 +48,14 @@ SKILL-INDEX.md                 # GENERATED — navigation index (gitignored)
 skills-to-archive.txt
 ```
 
-The medical-reference workflow has separate English and Chinese entry points.
-It resolves DOI and bibliographic metadata after citation extraction, then
+Each skill is a single bilingual document: `SKILL.md` carries a `## 中文` and an
+`## English` section with the same procedure, so one skill serves both languages
+and no `-zh`/`-en` duplicates exist. The medical-reference workflow resolves DOI
+and bibliographic metadata after citation extraction, then
 checks the named local EndNote library before online sources. Online retrieval
 runs open access first, then user-authorized institutional access, and finally a
 user-authorized Sci-Hub fallback driven by
-`skills/literature-source-archive-zh/scripts/scihub_fetch.mjs`. AbleSci is an
+`skills/literature-source-archive/scripts/scihub_fetch.mjs`. AbleSci is an
 optional, separately authorized stage for English-language literature only;
 `skills/ablesci-literature-assist/scripts/ablesci_batch.mjs` drives it headlessly
 after a one-time interactive login, and never posts or accepts without

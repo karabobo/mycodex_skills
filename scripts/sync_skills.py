@@ -28,15 +28,54 @@ def load_records(root: str):
     return records, errors
 
 
+MANIFEST_NAME = ".mycodex-manifest.json"
+
+
+def _read_manifest(target: str) -> list:
+    path = os.path.join(target, MANIFEST_NAME)
+    try:
+        with open(path, encoding="utf-8") as handle:
+            return [str(name) for name in json.load(handle).get("skills", [])]
+    except (OSError, ValueError, AttributeError):
+        return []
+
+
+def prune_install_tree(target: str, rendered: set) -> list:
+    """Remove skills this repo installed in an earlier run but no longer renders.
+
+    Only directories recorded in our own manifest are touched, so skills the user
+    keeps in the same root (or installed by another tool) are never deleted.
+    """
+    removed = []
+    for name in _read_manifest(target):
+        if name in rendered: continue
+        stale = os.path.join(target, name)
+        if os.path.isdir(stale) and os.path.isfile(os.path.join(stale, "SKILL.md")):
+            shutil.rmtree(stale)
+            removed.append(name)
+    return removed
+
+
+def write_manifest(target: str, rendered: set) -> None:
+    with open(os.path.join(target, MANIFEST_NAME), "w", encoding="utf-8") as handle:
+        json.dump({"skills": sorted(rendered)}, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
+
+
 def install_tree(source: str, target: str) -> int:
     os.makedirs(target, exist_ok=True)
     count = 0
+    rendered = set()
     for entry in sorted(os.listdir(source)):
         src = os.path.join(source, entry); dst = os.path.join(target, entry)
         if os.path.isdir(src):
+            rendered.add(entry)
             if os.path.exists(dst): shutil.rmtree(dst)
             shutil.copytree(src, dst, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__", "*.pyc", "node_modules")); count += 1
         elif os.path.isfile(src): shutil.copy2(src, dst)
+    removed = prune_install_tree(target, rendered)
+    write_manifest(target, rendered)
+    if removed: print(f"sync_skills: pruned {len(removed)} stale skill(s) -> {', '.join(removed)}")
     return count
 
 

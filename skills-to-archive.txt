@@ -1,20 +1,12 @@
 # One personal skill folder name per line.
 # Lines beginning with # are ignored.
+#
+# Only skills that still come from ~/.codex/skills verbatim are listed here.
+# The bilingual skills below are maintained in-repo as single zh+en documents,
+# so they have no same-named Codex upstream and are not pulled by
+# scripts/sync_from_codex_skills.sh:
+#   ablesci-literature-assist, bibliographic-metadata-resolver,
+#   endnote-pdf-retrieval, literature-source-archive, medical-reference-workflow,
+#   pdf-claim-highlighter, pptx-citation-inventory, selective-literature-highlight
 excel-forest-plot
-ablesci-literature-assist
-ablesci-literature-assist-zh
-pptx-citation-inventory-en
-pptx-citation-inventory-zh
-bibliographic-metadata-resolver-en
-bibliographic-metadata-resolver-zh
-endnote-pdf-retrieval-en
-endnote-pdf-retrieval-zh
-literature-source-archive-en
-literature-source-archive-zh
-pdf-claim-highlighter-en
-pdf-claim-highlighter-zh
-selective-literature-highlight-en
-selective-literature-highlight-zh
-medical-reference-workflow-en
-medical-reference-workflow-zh
 medical-pptx-writing
