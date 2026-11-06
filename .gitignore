@@ -27,3 +27,6 @@ build/
 # Generated DSH rendering and index (rebuild with scripts/sync-skills.sh)
 .dsh/
 SKILL-INDEX.md
+
+# JavaScript dependency install for the PDF highlight tool
+skills/selective-literature-highlight-zh/node_modules/

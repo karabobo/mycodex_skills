@@ -4,14 +4,21 @@ from pathlib import Path
 import tempfile
 import unittest
 
-import fitz
+try:
+    import fitz
+except ModuleNotFoundError:  # DSH's signed Python intentionally has no PyMuPDF.
+    fitz = None
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts/check_pdf_highlights.py"
-SPEC = importlib.util.spec_from_file_location("pdf_check", SCRIPT)
-CHECK = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(CHECK)
+if fitz is not None:
+    SPEC = importlib.util.spec_from_file_location("pdf_check", SCRIPT)
+    CHECK = importlib.util.module_from_spec(SPEC)
+    SPEC.loader.exec_module(CHECK)
+else:
+    CHECK = None
 
 
+@unittest.skipUnless(fitz is not None, "PyMuPDF is unavailable; use the JavaScript checker in DSH")
 class HighlightChecks(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()

@@ -156,22 +156,22 @@ def copy_resources(record: SkillIR, output_root: str) -> list[str]:
     copied: list[str] = []
 
     for entry in sorted(os.listdir(source_dir)):
-        if entry == "SKILL.md":
-            continue
-        if entry in CODEX_ONLY_FILES:
+        if entry == "SKILL.md" or entry in CODEX_ONLY_FILES:
             continue
         source_path = os.path.join(source_dir, entry)
-        if not os.path.isdir(source_path):
-            continue
         target_path = os.path.join(skill_dir, entry)
-        if os.path.exists(target_path):
-            shutil.rmtree(target_path)
-        shutil.copytree(
-            source_path,
-            target_path,
-            ignore=shutil.ignore_patterns(".DS_Store", "__pycache__", "*.pyc"),
-        )
-        copied.append(entry)
+        if os.path.isdir(source_path):
+            if os.path.exists(target_path):
+                shutil.rmtree(target_path)
+            shutil.copytree(
+                source_path,
+                target_path,
+                ignore=shutil.ignore_patterns(".DS_Store", "__pycache__", "*.pyc", "node_modules"),
+            )
+            copied.append(entry)
+        elif entry in ("package.json", "package-lock.json"):
+            shutil.copy2(source_path, target_path)
+            copied.append(entry)
     return copied
 
 
