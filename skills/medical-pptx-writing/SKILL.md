@@ -39,8 +39,8 @@ These rules override generic PowerPoint advice whenever this skill produces, reb
 
 - **Never add grouping locks.** Do not set `noGrp`（禁止组合）or "do not select"/lock flags on generated text boxes, vector shapes, connectors, icons, or groups. Every generated object must stay groupable and freely editable. Do not group or ungroup objects on your own initiative — grouping is the user's decision at edit time.
 - **Typography defaults: 微软雅黑 (Microsoft YaHei) for Chinese, Arial for Latin text.** Emit both slots on every run (`<a:latin typeface="Arial"/>` and `<a:ea typeface="微软雅黑"/>`, with `<a:cs typeface="Arial"/>`), and set the same pair in the slide master/theme defaults so new objects inherit it. Do not leave the inherited theme font (usually Calibri/等线) in place, and do not mix in a third family for emphasis — use weight, size, or color instead.
-- **Font sizes are whole points.** Use 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32 — the sizes a person sets by hand. Fractional sizes such as 10.5, 13.13 or 8.63 pt come from scaling, auto-fit or resizing a copied block, and they make a deck look machine-made and inconsistent between pages. Round to the nearest whole point (10.5 → 11, 13.13 → 13), never below 7 pt for the reference list or 20 pt for a title.
-- **Proofing language is set per run, never left to the package default.** Every text run carries `<a:rPr lang="zh-CN"/>` for Chinese and `lang="en-US"` for Latin text, and every paragraph end carries a matching `<a:endParaRPr lang="…"/>`. A generated deck otherwise inherits en-US, so Chinese content is checked by an English dictionary and shows red underlines. Also strip stale spell-check error flags (`err="1"`) left by earlier edits. Verify with `python3 scripts/pptx_text_audit.py deck.pptx --json` and repair with `--fix --output deck.fixed.pptx`; the report must end `missing_lang=0 wrong_lang=0 err_flags=0 non_integer_sizes=0`. Never solve this by turning off the reader's spell-check.
+- **Font size is decided when the text is written, in whole points.** Pick from 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32 and set `sz` once, on the run, before the text enters the deck. Never scale a text box, enable auto-fit shrink, or resize a copied block to make text fit — that is exactly what produces 10.5, 13.13 and 8.63 pt. If the copy does not fit at a whole size, shorten the copy or split the slide. Floor: 20 pt for titles, 7 pt for the reference list.
+- **Proofing language is set on every run as that run is written.** The moment a run is created — including runs a library inserts with its own defaults, or that are copied from a template — set `<a:rPr lang="zh-CN"/>` for Chinese and `lang="en-US"` for Latin text, and give the paragraph a matching `<a:endParaRPr lang="…"/>`. A deck that inherits en-US proofs Chinese with an English dictionary and shows red underlines even though nothing is wrong. Clear any `err="1"` flag carried over from earlier edits. `python3 scripts/pptx_text_audit.py deck.pptx --json` only confirms what was authored — `missing_lang=0 wrong_lang=0 err_flags=0 non_integer_sizes=0` — and its `--fix` is a fallback for inherited files, not the production method. Never solve this by turning off the reader's spell-check.
 - **Title size: 24 pt by default, 20–32 pt allowed.** Stay inside that band; treat a title that will not fit at 20 pt as a signal to shorten it or split the slide, not to shrink it further. Body copy, meaning lines and the reference box scale below the title and never above 32 pt.
 - **The bottom-left reference list is one single text box per slide, set at 8 pt by default.** Never split it into several text boxes, one shape per reference, or an image. Set it in standard NLM short style matching `/Applications/EndNote 2025/Styles/nlm_short.ens`: authors, title, journal, year, volume(issue), pages or article number. Drop to 7 pt only when the reference list genuinely will not fit at 8 pt, never below 7 pt.
 - **No DOI, URL, access date, or descriptive filler in that text box** — no `在线查看`, `查看原文`, `Available from:`, "accessed on", or similar. Identifiers belong in the evidence manifest, not the visible footnote.
@@ -180,6 +180,8 @@ Default object priority:
 
 Keep titles, body copy, labels, data, legends, key numbers, citations, mechanism labels, and flowchart text editable. SVG scalability does not automatically mean component-level editability; convert or rebuild when future internal editing is expected.
 
+Two text properties belong to the run that inserts the text, not to a cleanup pass: the proofing language (`lang`) and a whole-point size (`sz`). Set both in the same call that creates the run, and set the paragraph-end language at the same time; a later audit cannot recover intent the writer never recorded.
+
 Read [references/visual-and-editable-production.md](references/visual-and-editable-production.md) before layout, beautification, chart rebuilding, mechanism diagrams, or PPTX implementation.
 
 ### 9. Review medical meaning and visual integrity
@@ -205,6 +207,7 @@ Verify:
 - images are sharp and not distorted;
 - repeated elements are consistent;
 - key objects remain editable;
+- every run carries its own proofing language and a whole-point font size (`python3 scripts/pptx_text_audit.py deck.pptx --json` is clean);
 - the visible PDF matches the intended PPTX.
 
 Read [references/delivery-and-qa.md](references/delivery-and-qa.md) before final delivery.
@@ -218,7 +221,7 @@ Do not advance past a gate when a critical item is unresolved.
 3. **Blueprint gate:** every slide has one job and a defined source/visual.
 4. **Medical gate:** copy does not exceed the evidence.
 5. **Editability gate:** key content is not flattened.
-6. **Visual gate:** latest render has no material defect or misleading emphasis, the bottom-left reference list is one intact text box in NLM short style, and generated objects carry no grouping locks.
+6. **Visual gate:** latest render has no material defect or misleading emphasis, the bottom-left reference list is one intact text box in NLM short style, generated objects carry no grouping locks, and every run was authored with its own proofing language and a whole-point font size.
 
 ## Deliverables
 

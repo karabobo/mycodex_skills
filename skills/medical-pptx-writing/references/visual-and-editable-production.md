@@ -97,17 +97,34 @@ unzip -p deck.pptx 'ppt/slides/slide*.xml' | grep -o 'noGrp="1"' | wc -l
 - Set the pair once in `ppt/theme/theme1.xml` (`<a:majorFont>`/`<a:minorFont>`) so shapes created later inherit it; per-run overrides are then only needed for exceptions.
 - A deck that inherits Calibri or 等线 because the theme was never touched is a defect: it renders differently on machines without those fonts and breaks the intended look. Spot-check with `unzip -p deck.pptx ppt/theme/theme1.xml | grep -o 'typeface="[^"]*"' | sort -u`.
 - Do not introduce a third family for emphasis or headings; differentiate with size, weight, and color.
-- Whole points only: 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32. Fractional sizes (10.5, 13.13, 8.63 pt) are leftovers of scaling, auto-fit or a resized copy — round them to the nearest whole point, and never round a title below 20 pt or the reference list below 7 pt.
+- Whole points only, chosen when the text is written: 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32. Set `sz` on the run at creation; never scale a text box, enable auto-fit shrink, or resize a copied block to make copy fit — that is what produces 10.5, 13.13 and 8.63 pt. If it does not fit at a whole size, cut the copy or split the slide.
+
+  ```python
+  from pptx.util import Pt
+  run = paragraph.add_run()
+  run.text = "ORR 68%（95% CI 52–81）"
+  run.font.size = Pt(14)          # whole point, set before the text lands in the file
+  ```
+
+- A fractional `sz` already in the file is a repair case, not a style choice: round it to the nearest whole point, keeping titles at or above 20 pt and the reference list at or above 7 pt.
 - Title size: 24 pt by default, 20–32 pt allowed. Anything below 20 pt is a defect — shorten the title or split the slide instead. Everything else (body, meaning line, labels) sits below the title and never goes above 32 pt.
 - Fonts are named, not embedded by default. If the deliverable must look identical on a machine without 微软雅黑/Arial, say so rather than silently substituting.
 
 ## Proofing language
 
-- Proofing language is a per-run property (`<a:rPr lang="…">`), not one document setting. A script-built deck inherits `en-US` from the package default, so Chinese runs are proofed by an English dictionary and render with red underlines even though the text is correct.
+- Proofing language is a per-run property (`<a:rPr lang="…">`), not one document setting, and it belongs to the call that creates the run. A script-built deck inherits `en-US` from the package default, so Chinese runs are proofed by an English dictionary and render with red underlines even though the text is correct.
+
+  ```python
+  run = paragraph.add_run()
+  run.text = "结论句"
+  run.font.size = Pt(14)
+  run.font._rPr.set("lang", "zh-CN")      # same call, not a later cleanup
+  ```
+
 - Set `lang="zh-CN"` on every run whose text contains Chinese, `lang="en-US"` on Latin-only runs, and a matching `<a:endParaRPr lang="…"/>` for each paragraph. Mixed runs take `zh-CN`; split the run if the Latin part matters.
 - Clear stale spell-check flags: PowerPoint records past proofing results as `err="1"` on run properties. Those marks survive a language fix and keep the file looking wrong, so remove them from the file rather than muting proofing for the whole presentation.
-- The audit also checks font sizes: fractional `sz` values are reported as `non_integer_sizes` and `--fix` rounds them half-up.
-- Verify before delivery:
+- Auditing is confirmation, not the method: the writer sets `lang` and a whole-point `sz` on each run, and the script only reports what escaped. Fractional `sz` values are reported as `non_integer_sizes`; `--fix` rounds them half-up and is meant for inherited files.
+- Confirm before delivery:
 
   ```bash
   python3 scripts/pptx_text_audit.py deck.pptx --json      # audit only

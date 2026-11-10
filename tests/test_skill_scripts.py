@@ -159,7 +159,9 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
             self.assertIn("pptx_text_audit.py", text)
         self.assertIn('err="1"', skill)
         # Whole-point font sizes are a house rule, not a preference.
-        self.assertIn("Font sizes are whole points", skill)
+        self.assertIn("Font size is decided when the text is written", skill)
+        self.assertIn('run.font._rPr.set("lang"', visual)
+        self.assertIn("Pt(14)", visual)
         self.assertIn("Whole points only", visual)
         self.assertIn("non_integer_sizes", skill)
 
