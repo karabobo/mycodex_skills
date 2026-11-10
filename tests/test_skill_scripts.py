@@ -143,9 +143,9 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
                      "never shrink the font"):
             self.assertIn(rule, pptx)
 
-    def test_pptx_language_audit(self):
+    def test_pptx_text_audit(self):
         script = os.path.join(ROOT, "skills", "medical-pptx-writing", "scripts",
-                              "pptx_language_audit.py")
+                              "pptx_text_audit.py")
         self.assertTrue(os.path.exists(script), script)
         result = subprocess.run([sys.executable, script, "--self-test"],
                                 capture_output=True, text=True, check=False)
@@ -156,8 +156,12 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
                            "visual-and-editable-production.md")
         for text in (skill, visual):
             self.assertIn("lang=\"zh-CN\"", text)
-            self.assertIn("pptx_language_audit.py", text)
+            self.assertIn("pptx_text_audit.py", text)
         self.assertIn('err="1"', skill)
+        # Whole-point font sizes are a house rule, not a preference.
+        self.assertIn("Font sizes are whole points", skill)
+        self.assertIn("Whole points only", visual)
+        self.assertIn("non_integer_sizes", skill)
 
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")

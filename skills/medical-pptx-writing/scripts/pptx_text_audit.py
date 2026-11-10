@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Audit and repair proofing-language attributes inside a .pptx package.
+"""Audit and repair text properties inside a .pptx package: proofing language
+and whole-point font sizes.
 
 Why this exists: PowerPoint takes the proofing language from every text run
 (`<a:rPr lang="...">`), not from one document-wide setting. A deck assembled by
@@ -10,10 +11,16 @@ repair is to set the language per run and clear the old flags inside the file �
 not to switch off proofing for the whole presentation.
 
 Usage:
-  python3 scripts/pptx_language_audit.py deck.pptx
-  python3 scripts/pptx_language_audit.py deck.pptx --json
-  python3 scripts/pptx_language_audit.py deck.pptx --fix --output deck.fixed.pptx
-  python3 scripts/pptx_language_audit.py --self-test
+  python3 scripts/pptx_text_audit.py deck.pptx
+  python3 scripts/pptx_text_audit.py deck.pptx --json
+  python3 scripts/pptx_text_audit.py deck.pptx --fix --output deck.fixed.pptx
+  python3 scripts/pptx_text_audit.py --self-test
+
+Two defects are covered:
+  * proofing language — see above;
+  * fractional font sizes — human decks use whole points (12, 14, 18), while
+    scaled/auto-fit runs end up at 10.5, 13.13 or 8.63 pt. Round to the nearest
+    whole point and keep the title and reference-list floors intact.
 
 Exit codes: 0 clean (or fixed), 1 findings without --fix, 2 the file could not be read.
 """
@@ -44,6 +51,8 @@ RPR_OPEN_RE = re.compile(r"<a:rPr\b[^>]*?(?:/>|>)")
 LANG_ATTR_RE = re.compile(r'\blang="([^"]*)"')
 ERR_ATTR_RE = re.compile(r'\s+err="1"')
 ENDPARA_RE = re.compile(r"<a:endParaRPr\b[^>]*?(?:/>|>)")
+SZ_ATTR_RE = re.compile(r'\bsz="(\d+)"')
+SZ_TAG_RE = re.compile(r"<a:(?:rPr|endParaRPr|defRPr)\b[^>]*?(?:/>|>)")
 
 ZH = "zh-CN"
 EN = "en-US"
@@ -105,9 +114,42 @@ def _fix_paragraph(body, stats):
     return ENDPARA_RE.sub(fix_end, body)
 
 
+def round_size(value):
+    """Whole points only, half up: 10.5 pt -> 11 pt, 13.13 pt -> 13 pt, floor 1 pt."""
+    rounded = int((value / 100.0) + 0.5) * 100
+    return max(100, rounded)
+
+
+def fix_sizes(xml, stats):
+    def fix_tag(match):
+        tag = match.group(0)
+
+        def repl(attr):
+            value = int(attr.group(1))
+            if value % 100 == 0:
+                return attr.group(0)
+            stats["size_rounded"] += 1
+            return 'sz="%d"' % round_size(value)
+
+        return SZ_ATTR_RE.sub(repl, tag)
+
+    return SZ_TAG_RE.sub(fix_tag, xml)
+
+
+def audit_sizes(xml):
+    counts = {}
+    for tag in SZ_TAG_RE.findall(xml):
+        for raw in SZ_ATTR_RE.findall(tag):
+            value = int(raw)
+            counts[value] = counts.get(value, 0) + 1
+    fractional = {value: count for value, count in counts.items() if value % 100}
+    return counts, fractional
+
+
 def fix_xml(xml):
-    stats = {"lang_added": 0, "lang_changed": 0, "err_removed": 0}
+    stats = {"lang_added": 0, "lang_changed": 0, "err_removed": 0, "size_rounded": 0}
     new_xml = PARA_RE.sub(lambda m: "<a:p>" + _fix_paragraph(m.group(1), stats) + "</a:p>", xml)
+    new_xml = fix_sizes(new_xml, stats)
     return new_xml, stats
 
 
@@ -117,6 +159,8 @@ def audit_xml(xml):
         "missing_lang": 0,
         "wrong_lang": 0,
         "err_flags": 0,
+        "non_integer_sizes": 0,
+        "size_examples": [],
         "examples": [],
     }
     for para in PARA_RE.findall(xml):
@@ -152,6 +196,11 @@ def audit_xml(xml):
                         }
                     )
         report["err_flags"] += len(ERR_ATTR_RE.findall(para))
+    _, fractional = audit_sizes(xml)
+    report["non_integer_sizes"] = sum(fractional.values())
+    report["size_examples"] = sorted(
+        ("%.2f pt x%d" % (value / 100.0, count)) for value, count in fractional.items()
+    )[:12]
     return report
 
 
@@ -160,10 +209,24 @@ def _text_parts(names):
 
 
 def _merge(reports):
-    total = {"runs": 0, "missing_lang": 0, "wrong_lang": 0, "err_flags": 0, "examples": []}
+    total = {
+        "runs": 0,
+        "missing_lang": 0,
+        "wrong_lang": 0,
+        "err_flags": 0,
+        "non_integer_sizes": 0,
+        "size_examples": [],
+        "examples": [],
+    }
     for part, rep in reports.items():
-        for key in ("runs", "missing_lang", "wrong_lang", "err_flags"):
+        for key in ("runs", "missing_lang", "wrong_lang", "err_flags", "non_integer_sizes"):
             total[key] += rep[key]
+        for item in rep["size_examples"]:
+            value_key = item.split(" pt")[0]
+            if any(existing.startswith(value_key + " pt") for existing in total["size_examples"]):
+                continue
+            if len(total["size_examples"]) < 12:
+                total["size_examples"].append(item)
         for item in rep["examples"]:
             if len(total["examples"]) < 10:
                 total["examples"].append(dict(item, part=part))
@@ -177,7 +240,10 @@ def audit(path):
     total["file"] = path
     total["parts"] = len(reports)
     total["ok"] = (
-        total["missing_lang"] == 0 and total["wrong_lang"] == 0 and total["err_flags"] == 0
+        total["missing_lang"] == 0
+        and total["wrong_lang"] == 0
+        and total["err_flags"] == 0
+        and total["non_integer_sizes"] == 0
     )
     return total
 
@@ -187,11 +253,17 @@ def repair(path, output):
         names = archive.namelist()
         text_parts = set(_text_parts(names))
         changed = {}
-        stats = {"lang_added": 0, "lang_changed": 0, "err_removed": 0, "parts_changed": 0}
+        stats = {
+            "lang_added": 0,
+            "lang_changed": 0,
+            "err_removed": 0,
+            "size_rounded": 0,
+            "parts_changed": 0,
+        }
         for name in text_parts:
             original = archive.read(name).decode("utf-8")
             fixed, part_stats = fix_xml(original)
-            for key in ("lang_added", "lang_changed", "err_removed"):
+            for key in ("lang_added", "lang_changed", "err_removed", "size_rounded"):
                 stats[key] += part_stats[key]
             if fixed != original:
                 changed[name] = fixed
@@ -229,6 +301,7 @@ SLIDE_SAMPLE = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <a:p><a:r><a:t>中文标题没有写语言</a:t></a:r><a:endParaRPr lang="en-US"/></a:p>
     <a:p><a:r><a:rPr lang="en-US" err="1"/><a:t>mOS 延长 6.2 个月</a:t></a:r></a:p>
     <a:p><a:r><a:rPr lang="en-US"/><a:t>Objective response rate 68%</a:t></a:r></a:p>
+    <a:p><a:r><a:rPr lang="zh-CN" sz="1050"/><a:t>十分之十点五号字</a:t></a:r></a:p>
   </p:sp></p:spTree></p:cSld>
 </p:sld>
 """
@@ -246,11 +319,12 @@ def self_test():
         checks.append(("detects missing lang", report["missing_lang"] == 1))
         checks.append(("detects wrong lang", report["wrong_lang"] == 1))
         checks.append(("detects err flag", report["err_flags"] == 1))
+        checks.append(("detects fractional size", report["non_integer_sizes"] == 1))
         checks.append(("not ok before fix", report["ok"] is False))
 
         result = repair(source, fixed)
         checks.append(("clean after fix", result["ok"] is True))
-        checks.append(("kept run count", result["runs"] == 3))
+        checks.append(("kept run count", result["runs"] == 4))
 
         text = zipfile.ZipFile(fixed).read("ppt/slides/slide1.xml").decode("utf-8")
         checks.append(("no err left", 'err="1"' not in text))
@@ -258,6 +332,7 @@ def self_test():
         checks.append(("latin run stays en-US", text.count('lang="en-US"') >= 1))
         checks.append(("text preserved", "中文标题没有写语言" in text and "Objective response rate 68%" in text))
         checks.append(("endParaRPr re-languaged", '<a:endParaRPr lang="zh-CN"' in text))
+        checks.append(("fractional size rounded", 'sz="1100"' in text and 'sz="1050"' not in text))
 
     failed = [name for name, ok in checks if not ok]
     for name, ok in checks:
@@ -296,14 +371,18 @@ def main(argv):
         print(json.dumps(report, ensure_ascii=False, indent=2))
     else:
         print(
-            "runs={runs} missing_lang={missing_lang} wrong_lang={wrong_lang} err_flags={err_flags}"
-            .format(**report)
+            "runs={runs} missing_lang={missing_lang} wrong_lang={wrong_lang} "
+            "err_flags={err_flags} non_integer_sizes={non_integer_sizes}".format(**report)
         )
+        for item in report.get("size_examples", []):
+            print("  - fractional size: %s" % item)
         for item in report["examples"]:
             print("  - {issue}: {text!r}".format(**item))
         if report.get("fix"):
-            print("fixed: {lang_added} lang added, {lang_changed} changed, {err_removed} err flags removed"
-                  .format(**report["fix"]))
+            print(
+                "fixed: {lang_added} lang added, {lang_changed} changed, "
+                "{err_removed} err flags removed, {size_rounded} sizes rounded".format(**report["fix"])
+            )
     return 0 if report["ok"] else 1
 
 
