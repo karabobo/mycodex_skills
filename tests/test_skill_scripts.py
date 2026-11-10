@@ -15,6 +15,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -141,6 +142,22 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         for rule in ("**Title rules.**", "complete sentence", "15 words", "active voice",
                      "never shrink the font"):
             self.assertIn(rule, pptx)
+
+    def test_pptx_language_audit(self):
+        script = os.path.join(ROOT, "skills", "medical-pptx-writing", "scripts",
+                              "pptx_language_audit.py")
+        self.assertTrue(os.path.exists(script), script)
+        result = subprocess.run([sys.executable, script, "--self-test"],
+                                capture_output=True, text=True, check=False)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('"ok": true', result.stdout)
+        skill = self.read("skills", "medical-pptx-writing", "SKILL.md")
+        visual = self.read("skills", "medical-pptx-writing", "references",
+                           "visual-and-editable-production.md")
+        for text in (skill, visual):
+            self.assertIn("lang=\"zh-CN\"", text)
+            self.assertIn("pptx_language_audit.py", text)
+        self.assertIn('err="1"', skill)
 
     def test_pptx_font_and_size_defaults(self):
         pptx = self.read("skills", "medical-pptx-writing", "SKILL.md")

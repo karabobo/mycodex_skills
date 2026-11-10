@@ -188,6 +188,36 @@ async function pageSummary(page) {
   });
 }
 
+// The profile directory normally keeps cookies, but a hard kill (or a crash)
+// can drop the session between polls. Persist an explicit storage state as soon
+// as sign-in is detected so later headless runs can always restore it.
+function stateFile(options) {
+  return path.join(options.profile, "storage-state.json");
+}
+
+async function saveState(context, options, log) {
+  try {
+    const state = await context.storageState();
+    await writeFile(stateFile(options), JSON.stringify(state, null, 2), "utf8");
+    if (log) log(`saved session state -> ${stateFile(options)}`);
+  } catch (error) {
+    if (log) log(`could not save session state: ${error.message}`);
+  }
+}
+
+async function restoreState(context, options, log) {
+  try {
+    const raw = await readFile(stateFile(options), "utf8");
+    const state = JSON.parse(raw);
+    if (Array.isArray(state.cookies) && state.cookies.length > 0) {
+      await context.addCookies(state.cookies);
+      if (log) log(`restored ${state.cookies.length} cookies from ${stateFile(options)}`);
+    }
+  } catch {
+    // no saved state yet: first run, or a profile-only session
+  }
+}
+
 export function resolveHeadless(options) {
   // `--login` must always open a real window, even though headless is the
   // default for every other mode: otherwise the interactive wait is skipped and
@@ -197,7 +227,12 @@ export function resolveHeadless(options) {
 }
 
 function looksLikeLogin(url, bodyText) {
-  return /\/login|signin|sign-in|passport/i.test(url) || /登录|Sign in|Log in/i.test(bodyText);
+  if (/\/site\/login|\/login|signin|sign-in|passport/i.test(url)) return true;
+  // A signed-in page still contains the substring 登录 (退出登录), so match the
+  // signed-in chrome first and only then look for the login form itself.
+  if (/退出登录|退出系统|我的求助|个人中心|我的账号/.test(bodyText)) return false;
+  if (/登录密码|登录邮箱|扫码登录|微信扫码登录|Sign in|Log in/i.test(bodyText)) return true;
+  return false;
 }
 
 async function bodyText(page) {
@@ -212,8 +247,12 @@ async function ensureLoggedIn(context, page, options) {
   const headless = resolveHeadless(options);
   const { loginWaitSeconds } = options;
   await page.goto(CREATE_URL, { waitUntil: "domcontentloaded", timeout: NAV_TIMEOUT_MS });
+  await page.bringToFront().catch(() => {});
   let text = await bodyText(page);
-  if (!looksLikeLogin(page.url(), text)) return { loggedIn: true };
+  if (!looksLikeLogin(page.url(), text)) {
+    await saveState(context, options);
+    return { loggedIn: true };
+  }
 
   const email = options.email || process.env.ABLESCI_EMAIL || "";
   const password = options.password || keychainPassword(email);
@@ -227,7 +266,10 @@ async function ensureLoggedIn(context, page, options) {
     if (submit) await submit.click();
     await page.waitForTimeout(3_000);
     text = await bodyText(page);
-    if (!looksLikeLogin(page.url(), text)) return { loggedIn: true, via: "env-credentials" };
+    if (!looksLikeLogin(page.url(), text)) {
+      await saveState(context, options);
+      return { loggedIn: true, via: "env-credentials" };
+    }
     if (/验证码|captcha|滑块|扫码|动态码|OTP/i.test(text)) {
       if (headless) {
         return {
@@ -257,22 +299,45 @@ async function ensureLoggedIn(context, page, options) {
   const deadline = Date.now() + loginWaitSeconds * 1000;
   let windowClosed = false;
   let loggedInText = "";
+  let lastNote = 0;
   while (Date.now() < deadline) {
     try {
       await page.waitForTimeout(2_000);
-      if (page.isClosed()) {
+      // QR/WeChat sign-in usually finishes in another tab, so watch every page
+      // in the context instead of only the one we opened.
+      const pages = context.pages().filter((p) => !p.isClosed());
+      if (pages.length === 0) {
         windowClosed = true;
         break;
       }
-      const onLoginUrl = /\/site\/login|\/login/i.test(page.url());
+      const watched = pages[pages.length - 1];
+      if (watched !== page) await watched.bringToFront().catch(() => {});
+      const currentUrl = watched.url();
+      const onLoginUrl = /\/site\/login|\/login/i.test(currentUrl);
+      const current = await bodyText(watched).catch(() => "");
+      const signedIn = /退出登录|退出系统|我的求助|个人中心|我的账号/.test(current) && !/登录密码|登录邮箱/.test(current);
+      if (!onLoginUrl && !looksLikeLogin(currentUrl, current)) {
+        await saveState(context, options);
+        return { loggedIn: true, via: "interactive" };
+      }
+      if (onLoginUrl && !signedIn) {
+        if (Date.now() - lastNote > 30_000) {
+          lastNote = Date.now();
+          process.stderr.write(`still waiting for sign-in (${currentUrl})\n`);
+        }
+        continue;
+      }
+      page = watched;
       if (onLoginUrl) {
-        const current = await bodyText(page);
-        const signedIn = /退出登录|退出系统|我的求助|个人中心|我的账号/.test(current) && !/登录密码|登录邮箱/.test(current);
-        if (!signedIn) continue;
+        // Persist immediately: the user may close the window at any moment.
+        await saveState(context, options);
       }
       await page.goto(CREATE_URL, { waitUntil: "domcontentloaded", timeout: 20_000 });
       loggedInText = await bodyText(page);
-      if (!looksLikeLogin(page.url(), loggedInText)) return { loggedIn: true, via: "interactive" };
+      if (!looksLikeLogin(page.url(), loggedInText)) {
+        await saveState(context, options);
+        return { loggedIn: true, via: "interactive" };
+      }
     } catch (error) {
       if (/Target closed|has been closed|Protocol error|Session closed/i.test(String(error))) {
         windowClosed = true;
@@ -561,9 +626,10 @@ Headless runs need a saved session: run --login once (headful).`);
     args: ["--disable-blink-features=AutomationControlled"],
   });
   const result = { mode: [], profile: options.profile, requests: [], downloads: [], accepted: null };
+  await restoreState(context, options, log);
 
   try {
-    const page = context.pages()[0] ?? (await context.newPage());
+    let page = context.pages()[0] ?? (await context.newPage());
 
     // --inspect works without a session on purpose: it is how selectors and the
     // login state get diagnosed on a fresh machine.
@@ -589,6 +655,7 @@ Headless runs need a saved session: run --login once (headful).`);
     }
 
     if (options.login) {
+      await saveState(context, options, log);
       result.mode.push("login");
       result.message = "session saved; later runs can use --headless";
       console.log(JSON.stringify(result, null, 2));
