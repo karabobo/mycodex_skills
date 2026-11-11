@@ -102,7 +102,7 @@ unzip -p deck.pptx 'ppt/slides/slide*.xml' | grep -o 'noGrp="1"' | wc -l
   ```python
   from pptx.util import Pt
   run = paragraph.add_run()
-  run.text = "ORR 68%（95% CI 52–81）"
+  run.text = "ORR 68% [95% CI 52–81]"
   run.font.size = Pt(14)          # whole point, set before the text lands in the file
   ```
 
@@ -124,6 +124,8 @@ unzip -p deck.pptx 'ppt/slides/slide*.xml' | grep -o 'noGrp="1"' | wc -l
 - Set `lang="zh-CN"` on every run whose text contains Chinese, `lang="en-US"` on Latin-only runs, and a matching `<a:endParaRPr lang="…"/>` for each paragraph. Mixed runs take `zh-CN`; split the run if the Latin part matters.
 - Clear stale spell-check flags: PowerPoint records past proofing results as `err="1"` on run properties. Those marks survive a language fix and keep the file looking wrong, so remove them from the file rather than muting proofing for the whole presentation.
 - Auditing is confirmation, not the method: the writer sets `lang` and a whole-point `sz` on each run, and the script only reports what escaped. Fractional `sz` values are reported as `non_integer_sizes`; `--fix` rounds them half-up and is meant for inherited files.
+- Numbers sit in one bracket style: confidence intervals use English square brackets `[95% CI 52–81]`, never `（95% CI …）` or `(95% CI …)`, and the brackets wrap the interval only.
+- Citation markers are bare superscript numerals before the sentence-ending punctuation — `中位 OS 21.9 个月^1。`, not `[1]` or `(1)`. In OOXML the marker is a run with `baseline="30000"` at one size step below the body text; several sources share one run (`1,3`).
 - Confirm before delivery:
 
   ```bash

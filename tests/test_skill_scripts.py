@@ -154,6 +154,7 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         skill = self.read("skills", "medical-pptx-writing", "SKILL.md")
         visual = self.read("skills", "medical-pptx-writing", "references",
                            "visual-and-editable-production.md")
+        page_kit = self.read("skills", "medical-pptx-writing", "references", "page-kit.md")
         for text in (skill, visual):
             self.assertIn("lang=\"zh-CN\"", text)
             self.assertIn("pptx_text_audit.py", text)
@@ -162,6 +163,9 @@ class TestLiteraturePolicyDocs(unittest.TestCase):
         self.assertIn("Font size is decided when the text is written", skill)
         self.assertIn('run.font._rPr.set("lang"', visual)
         self.assertIn("Pt(14)", visual)
+        self.assertIn("Confidence intervals take English square brackets", skill)
+        self.assertIn("Citation markers are bare superscript numerals", skill)
+        self.assertIn("英文方括号", page_kit)
         self.assertIn("Whole points only", visual)
         self.assertIn("non_integer_sizes", skill)
 
